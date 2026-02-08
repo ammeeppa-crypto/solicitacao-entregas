@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solicitação de Entrega</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 15px;
+      max-width: 500px;
+      margin: auto;
+      background: #f7f7f7;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header img {
+      width: 120px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+      color: #0f5dc2;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    button {
+      background: #0f5dc2;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0c9c37;
+    }
+
+    hr {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <img src="logo.png" alt="Logo do App">
+
+<!-- CONFIGURAÇÃO DO ESTABELECIMENTO -->
+<section>
+  <h3>Configuração do Estabelecimento</h3>
+
+  <input type="text" id="nomeEstabelecimento" placeholder="Nome do estabelecimento">
+  <textarea id="enderecoRetirada" placeholder="Endereço da retirada"></textarea>
+
+  <button type="button" id="salvarConfig">Salvar configuração</button>
+  <hr>
+</section>
+
+<!-- FORMULÁRIO DE PEDIDO -->
+<form id="pedidoForm">
+  <input type="text" id="nome" placeholder="Nome do cliente" required>
+  <textarea id="enderecoEntrega" placeholder="Endereço da entrega" required></textarea>
+  <input type="text" id="taxa" placeholder="Valor da taxa (ex: 15,00)" required>
+
+  <select id="volta">
+    <option value="Não">Volta: Não</option>
+    <option value="Sim">Volta: Sim</option>
+  </select>
+
+  <button type="submit">Enviar pelo WhatsApp</button>
+</form>
+
+<script>
+  const TAXA_VOLTA = 4.00;
+
+  // CARREGAR CONFIGURAÇÃO AO ABRIR
+  window.addEventListener('load', function () {
+    const nomeSalvo = localStorage.getItem('nomeEstabelecimento');
+    const enderecoSalvo = localStorage.getItem('enderecoRetirada');
+
+    if (nomeSalvo) {
+      document.getElementById('nomeEstabelecimento').value = nomeSalvo;
+    }
+    if (enderecoSalvo) {
+      document.getElementById('enderecoRetirada').value = enderecoSalvo;
+    }
+  });
+
+  // SALVAR CONFIGURAÇÃO
+  document.getElementById('salvarConfig').addEventListener('click', function () {
+    const nomeEstab = document.getElementById('nomeEstabelecimento').value.trim();
+    const enderecoRet = document.getElementById('enderecoRetirada').value.trim();
+
+    if (!nomeEstab || !enderecoRet) {
+      alert("Preencha os dados do estabelecimento.");
+      return;
+    }
+
+    localStorage.setItem('nomeEstabelecimento', nomeEstab);
+    localStorage.setItem('enderecoRetirada', enderecoRet);
+
+    alert("Configuração salva com sucesso!");
+  });
+
+  // CONFIRMAÇÃO DA VOLTA
+  document.getElementById('volta').addEventListener('change', function () {
+    if (this.value === 'Sim') {
+      const confirma = confirm(
+        "Ao marcar VOLTA: SIM será acrescentado R$ 4,00 à taxa.\nDeseja continuar?"
+      );
+      if (!confirma) {
+        this.value = 'Não';
+      }
+    }
+  });
+
+  // ENVIO DO PEDIDO
+  document.getElementById('pedidoForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const nomeEstab = localStorage.getItem('nomeEstabelecimento');
+    const enderecoLoja = localStorage.getItem('enderecoRetirada');
+
+    if (!nomeEstab || !enderecoLoja) {
+      alert("Configure o estabelecimento antes de enviar pedidos.");
+      return;
+    }
+
+    const nome = document.getElementById('nome').value.trim();
+    const enderecoEntrega = document.getElementById('enderecoEntrega').value.trim();
+    const taxaInput = document.getElementById('taxa').value.replace(',', '.');
+    const volta = document.getElementById('volta').value;
+
+    const taxaBase = parseFloat(taxaInput);
+    if (isNaN(taxaBase)) {
+      alert("Informe um valor válido para a taxa.");
+      return;
+    }
+
+    const taxaTotal = volta === "Sim" ? taxaBase + TAXA_VOLTA : taxaBase;
+
+    const mensagem = `
+ *Mensagem padrão para solicitação de entrega 
+*
+
+ *Estabelecimento:*
+${nomeEstab}
+
+ *Retirada:*
+${enderecoLoja}
+
+ *Entrega:*
+${enderecoEntrega}
+
+ *Cliente:*
+${nome}
+
+ *Taxa base:* R$ ${taxaBase.toFixed(2).replace('.', ',')}
+ *Volta:* ${volta === "Sim" ? "Sim (+ R$ 4,00)" : "Não"}
+ *Total:* R$ ${taxaTotal.toFixed(2).replace('.', ',')}
+`;
+
+    const texto = encodeURIComponent(mensagem);
+    const link = `https://wa.me/?text=${texto}`;
+    window.open(link, '_blank');
+
+    document.getElementById('pedidoForm').reset();
+    document.getElementById('volta').value = 'Não';
+  });
+</script>
+
+</body>
+</html>
