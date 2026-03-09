@@ -350,7 +350,7 @@
     fetch(URL_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dadosParaBanco) })
     .catch(err => console.error(err));
 
-    const msg = `*Solicitação Padrão de Entrega*\n\n*RETIRADA:*\n${nomeLoja}\n_(ID: ${idLoja} | Tabela: ${tabelaAtiva})_\n\n*CLIENTE:* ${nomeCliente}\n*BAIRRO:* ${bairroDestino}\n*ENDEREÇO:* ${enderecoEntrega}\n\n*VALORES:*\nEntrega: R$ ${taxaBase.toFixed(2).replace('.', ',')}\nVolta: R$ ${valorVolta.toFixed(2).replace('.', ',')}\n*TOTAL: R$ ${total.toFixed(2).replace('.', ',')}*\n\n*AMMEEP – PARÁ*`;
+    const msg = `*Solicitação Padrão de Entrega*\n\n*RETIRADA:*\n${nomeLoja}\n_(ID: ${idLoja} | Tabela: ${tabelaAtiva})_\n\n*CLIENTE:* ${nomeCliente}\n*ENDEREÇO:* ${enderecoEntrega}\n*BAIRRO:* ${bairroDestino}\n\n*VALORES:*\nEntrega: R$ ${taxaBase.toFixed(2).replace('.', ',')}\nVolta: R$ ${valorVolta.toFixed(2).replace('.', ',')}\n*TOTAL: R$ ${total.toFixed(2).replace('.', ',')}*\n\n*AMMEEP – PARÁ*`;
 
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
   };
@@ -358,4 +358,3 @@
 </script>
 </body>
 </html>
-
