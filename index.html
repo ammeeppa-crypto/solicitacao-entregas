@@ -4,359 +4,308 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f5dc2">
+  <meta name="theme-color" content="#0f5dc2">
   <title>AMMEEP - Sistema de Entrega 2026</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-   body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #001629; color: #333; }
-    header { text-align: center; margin-bottom: 20px; }
-    header img { width: 130px; }
-    .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; border-top: 5px solid #0f5dc2; }
-    h3 { font-size: 16px; color: #0f5dc2; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-    input, textarea, select, button { width: 100%; margin-bottom: 12px; padding: 14px; font-size: 16px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; outline: none; }
+    body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #050120fd; color: #333; padding-bottom: 100px; }
+    header { position: relative; height: 180px; overflow: hidden; border-radius: 0 0 20px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+    #hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); z-index: 1; object-fit: cover; }
+    header img { width: 130px; position: relative; z-index: 2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+    header::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.2); z-index: 1; }
+    
+    .card { background: white; padding: 18px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); margin-bottom: 20px; border-top: 6px solid #0f5dc2; }
+    .aba-content { display: none; }
+    .aba-content.active { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    h3 { font-size: 16px; color: #0f5dc2; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; text-align: center; }
+    
+    input, textarea, select { width: 100%; margin-bottom: 12px; padding: 14px; font-size: 15px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; outline: none; transition: 0.3s; }
+    input:focus { border-color: #0f5dc2; }
+
     #avisoDeteccao { font-size: 14px; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none; text-align: center; font-weight: bold; }
     .sucesso-detec { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    #resumoFinanceiro { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #0f5dc2; }
+
+    button { 
+      width: 100%; padding: 15px; font-size: 16px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: white;
+      transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    }
+    button:active { transform: scale(0.96); }
+    
+    .btn-azul { background: linear-gradient(135deg, #0f5dc2, #003a8c); }
+    .btn-verde { background: linear-gradient(135deg, #0cbd15, #088a0f); margin-top: 10px; }
+    .btn-cinza { background: linear-gradient(135deg, #666, #444); margin-top: 15px; }
+
+    .filtro-periodo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; background: #f0f4f8; padding: 12px; border-radius: 10px; border: 1px solid #bcd; }
+    .filtro-periodo label { font-size: 10px; font-weight: bold; color: #0f5dc2; display: block; margin-bottom: 4px; }
+    .filtro-periodo input { margin-bottom: 0; padding: 10px; border: 1px solid #cbd; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; }
+    th { background: #0f5dc2; color: white; padding: 12px 5px; text-align: left; }
+    td { padding: 10px 5px; border-bottom: 1px solid #eee; }
+
+    #resumoFinanceiro { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #0f5dc2; margin-bottom: 15px; }
     .linha-resumo { display: flex; justify-content: space-between; margin-bottom: 5px; }
     .total-destaque { font-weight: bold; font-size: 18px; color: #0f5dc2; border-top: 2px solid #0f5dc2; padding-top: 8px; }
-    button { background: #0f5dc2; color: white; border: none; font-weight: bold; cursor: pointer; }
-    .footer { background-color: #0f5dc2; color: white; text-align: center; padding: 25px 15px; border-radius: 15px 15px 0 0; font-size: 14px; margin-top: 20px; }
-    #exibeId { font-size: 11px; color: #666; text-align: right; margin-top: -10px; margin-bottom: 10px; }
-  
-  /* =========================================
-        NOVOS EFEITOS DE BOTÕES (HOVER & ACTIVE)
-        ========================================= */
 
-    /* Efeito suave de transição para todos os elementos interativos */
-    button, input, select, textarea, .icon-menu {
-      transition: all 0.3s ease;
+    .assinatura { text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 20px; letter-spacing: 2px; }
+
+    @media print {
+      body { background: white !important; padding: 0; }
+      header, .bottom-nav, .btn-filtrar, .filtro-periodo, .btn-cinza, #salvarConfig, .assinatura { display: none !important; }
+      .card { box-shadow: none; border: none; width: 100%; }
+      table { width: 100% !important; border: 1px solid #000; }
+      th, td { border: 1px solid #000; color: black !important; padding: 8px; }
     }
 
-    /* 1. Botão Principal (🚀 Enviar para WhatsApp) */
-    button[type="submit"] {
-      background: #0cbd15; /* Verde original que você definiu */
-      border: 2px solid transparent;
-    }
-
-    /* Ao passar o mouse no botão verde */
-    button[type="submit"]:hover {
-      background: #c51e08; /* Verde mais escuro */
-      transform: translateY(-3px); /* Levanta levemente o botão */
-      box-shadow: 0 6px 12px rgba(12, 189, 21, 0.3); /* Sombra verde forte */
-    }
-
-    /* Ao clicar no botão verde */
-    button[type="submit"]:active {
-      transform: translateY(-1px); /* Abaixa um pouco */
-      box-shadow: 0 2px 4px rgba(12, 189, 21, 0.2);
-    }
-
-    /* 2. Botão Secundário (Salvar Configuração) */
-    #salvarConfig {
-      background: rgb(7, 22, 228); /* Azul original que você definiu */
-      color: #bccce0;
-      border: 2px solid #0f5dc2;
-    }
-
-    /* Ao passar o mouse no botão azul */
-    #salvarConfig:hover {
-      background: #111111; /* Inverte a cor para o azul padrão */
-      color: white;
-      box-shadow: 0 4px 8px rgba(15, 93, 194, 0.2);
-    }
-
-    /* 3. Efeito nos Campos de Entrada (Input, Textarea, Select) */
-    input:focus, textarea:focus, select:focus {
-      border-color: #0f5dc2; /* Borda azul ao clicar */
-      box-shadow: 0 0 0 3px rgba(15, 93, 194, 0.1); /* Brilho azul suave */
-      background-color: #fdfeff;
-    }
-/* Estilo do Hero Video */
-    header {
-      position: relative;
-      height: 180px; /* Altura da parte superior */
-      overflow: hidden;
-      border-radius: 0 0 20px 20px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #hero-video {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      width: auto;
-      height: auto;
-      transform: translate(-50%, -50%);
-      z-index: 1;
-      object-fit: cover;
-    }
-
-    header img {
-      width: 130px;
-      position: relative;
-      z-index: 2; /* Garante que o logo fique na frente do vídeo */
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); /* Sombra para destacar o logo */
-    }
-
-    /* Overlay escuro opcional para dar leitura ao logo se o vídeo for muito claro */
-    header::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.2); 
-      z-index: 1;
-    }
-  
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #ddd; z-index: 9999; }
+    .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #777; font-size: 11px; flex: 1; border: none; background: none; cursor: pointer; }
+    .nav-item i { font-size: 20px; margin-bottom: 5px; color: #0f5dc2; }
+    .nav-item.active { color: #0f5dc2; font-weight: bold; }
   </style>
 </head>
 <body>
 
   <header>
-  <video autoplay muted loop playsinline id="hero-video">
-    <source src="hero/seu-video.mp4" type="video/mp4">
-    Seu navegador não suporta vídeos.
-  </video>
-  <img src="logo.png" alt="Logo">
-</header>
+    <video autoplay muted loop playsinline id="hero-video">
+      <source src="hero/seu-video.mp4" type="video/mp4">
+    </video>
+    <img src="logo.png" alt="Logo">
+  </header>
 
-  <div class="card">
-    <h3>Configuração da Loja - RETIRADA</h3>
-    <textarea id="enderecoRetirada" placeholder="Nome da Loja, Endereço e Bairro"></textarea>
-    <div id="avisoDeteccao">Aguardando endereço...</div>
-    <div id="exibeId">ID da Loja: <span id="valId">Gerando...</span></div>
-    
-    <select id="bairroOrigem" style="display:none;">
-      <option value="">Seletor Oculto</option>
-      <option value="SAUDADE">SAUDADE</option>
-      <option value="IANETAMA">IANETAMA</option>
-      <option value="FONTE BOA">FONTE BOA</option>
-      <option value="MILAGRE">MILAGRE</option>
-      <option value="CENTRO">CENTRO</option>
-      <option value="ESTRELA">ESTRELA</option>
-      <option value="TITANLANDIA">TITANLANDIA</option>
-      <option value="CRISTO">CRISTO</option>
-      <option value="CAIÇARA">CAIÇARA</option>
-      <option value="NOVO ESTRELA">NOVO ESTRELA</option>
-      <option value="NOVA OLINDA">NOVA OLINDA</option>
-      <option value="NOVO CAIÇARA">NOVO CAIÇARA</option>
-      <option value="SÃO JOSÉ">SÃO JOSÉ</option>
-      <option value="JADERLANDIA">JADERLANDIA</option>
-
-    </select>
-    <button type="button" id="salvarConfig">Salvar Configuração</button>
-  </div>
-
-  <div class="card">
-    <h3>Dados da Entrega</h3>
-    <form id="pedidoForm" autocomplete="off">
-      <input type="text" id="nomeCliente" placeholder="Nome do cliente" required>
-      <textarea id="enderecoEntrega" placeholder="Endereço da entrega (Rua, nº e Condomínio)" required></textarea>
-      <input type="text" id="bairroDestino" placeholder="Bairro de destino" required>
+  <div id="aba-painel" class="aba-content active">
+    <div class="card">
+      <h3>Configuração da Loja</h3>
+      <textarea id="enderecoRetirada" placeholder="Nome da Loja, Endereço e Bairro"></textarea>
+      <div id="avisoDeteccao">Aguardando endereço...</div>
+      <div id="exibeId" style="text-align:right; font-size:11px; margin-bottom:10px;">ID: <span id="valId">...</span></div>
       
-      <select id="volta">
-        <option value="Não">Vai precisar de Volta? Não</option>
-        <option value="Sim">Vai precisar de Volta? Sim (+ R$ 4,00)</option>
+      <select id="bairroOrigem" style="display:none;">
+        <option value="SAUDADE">SAUDADE</option>
+        <option value="CENTRO">CENTRO</option>
+        <option value="IANETAMA">IANETAMA</option>
+        <option value="FONTE BOA">FONTE BOA</option>
+        <option value="MILAGRE">MILAGRE</option>
+        <option value="ESTRELA">ESTRELA</option>
+        <option value="TITANLANDIA">TITANLANDIA</option>
+        <option value="CRISTO">CRISTO</option>
+        <option value="CAIÇARA">CAIÇARA</option>
+        <option value="NOVO ESTRELA">NOVO ESTRELA</option>
+        <option value="NOVA OLINDA">NOVA OLINDA</option>
+        <option value="NOVO CAIÇARA">NOVO CAIÇARA</option>
+        <option value="SÃO JOSÉ">SÃO JOSÉ</option>
+        <option value="JADERLANDIA">JADERLANDIA</option>
       </select>
+      <button type="button" id="salvarConfig" class="btn-azul">SALVAR CONFIGURAÇÃO</button>
+    </div>
 
-      <div id="resumoFinanceiro">
-        <div class="linha-resumo"><span>Taxa de Entrega:</span> <span id="res-base">R$ 0,00</span></div>
-        <div class="linha-resumo"><span>Adicional Volta:</span> <span id="res-volta">R$ 0,00</span></div>
-        <div class="linha-resumo total-destaque"><span>TOTAL:</span> <span id="res-total">---</span></div>
-      </div>
-
-      <button type="submit" style="margin-top: 15px;">🚀 Enviar para WhatsApp</button>
-    </form>
+    <div class="card">
+      <h3>Dados da Entrega</h3>
+      <form id="pedidoForm" autocomplete="off">
+        <input type="text" id="nomeCliente" placeholder="Nome do cliente" required>
+        <textarea id="enderecoEntrega" placeholder="Endereço da entrega (Rua, nº e Condomínio)" required></textarea>
+        <input type="text" id="bairroDestino" placeholder="Bairro de destino" required>
+        <select id="volta">
+          <option value="Não">Vai precisar de Volta? Não</option>
+          <option value="Sim">Vai precisar de Volta? Sim (+ R$ 4,00)</option>
+        </select>
+        <div id="resumoFinanceiro">
+          <div class="linha-resumo"><span>Taxa de Entrega:</span> <span id="res-base">R$ 0,00</span></div>
+          <div class="linha-resumo"><span>Adicional Volta:</span> <span id="res-volta">R$ 0,00</span></div>
+          <div class="linha-resumo total-destaque"><span>TOTAL:</span> <span id="res-total">---</span></div>
+        </div>
+        <button type="submit" class="btn-verde">🚀 SOLICITAR ENTREGADOR</button>
+      </form>
+    </div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.1</div>
   </div>
 
-  <footer class="footer">AMMEEP – PARÁ | © 2026 @asGama vs.1.6.1</footer>
+  <div id="aba-pedidos" class="aba-content">
+    <div class="card">
+      <h3>Relatório de Entregas</h3>
+      <div class="filtro-periodo">
+        <div><label>INÍCIO</label><input type="date" id="dataInicio"></div>
+        <div><label>FIM</label><input type="date" id="dataFim"></div>
+      </div>
+      <button class="btn-azul" onclick="carregarDadosPlanilha()">🔍 FILTRAR PERÍODO</button>
+      
+      <div id="resumoTotal" style="text-align:center; font-weight:bold; color:#0f5dc2; margin:15px 0; font-size:22px;">R$ 0,00</div>
+      <table>
+        <thead><tr><th>Data</th><th>Cliente</th><th>Tabela</th><th>Valor</th></tr></thead>
+        <tbody id="corpoTabela"><tr><td colspan="4" style="text-align:center;">Filtre para ver os dados.</td></tr></tbody>
+      </table>
+      <button onclick="window.print()" class="btn-cinza">🖨️ IMPRIMIR RELATÓRIO A4</button>
+    </div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026</div>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-house"></i><span>Painel</span></button>
+    <button class="nav-item" onclick="trocarAba('aba-pedidos', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Relatório</span></button>
+    <button class="nav-item" onclick="trocarAba('aba-pedidos', this)"><i class="fa-solid fa-chart-line"></i><span>Financeiro</span></button>
+    <button class="nav-item" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-user-gear"></i><span>Perfil</span></button>
+  </nav>
 
 <script>
-  
-  // --- VARIÁVEIS GLOBAIS AMMEEP (v1.6.4) ---
   let dadosTabelas = {};
   const ADICIONAL_VOLTA = 4.00;
-  const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbz8_mgUcIH13WKIvPWIbgMdI4MKwqlh5PZA5anDRZYb_zgQMsXHJPqN-Hdb_i_kDwH07A/exec";
+  const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbxZssBcupea8mOjRSUT-z7Jki-5UY804YsLEa6neHr4l6ulsW5ao4zmC-flqovfBaF2/exec";
 
-  // 1. Carrega as tabelas JSON
-  fetch('./tabelas.json')
-    .then(res => res.json())
-    .then(data => { 
-      dadosTabelas = data; 
-      carregarConfiguracao(); 
-    })
-    .catch(err => console.error("Erro ao carregar tabelas:", err));
+  fetch('./tabelas.json').then(res => res.json()).then(data => { 
+      dadosTabelas = data; carregarConfiguracao(); 
+      const hoje = new Date().toISOString().split('T')[0];
+      document.getElementById('dataInicio').value = hoje;
+      document.getElementById('dataFim').value = hoje;
+  });
 
-  // 2. Função de limpeza de texto
-  function limparTexto(t) { 
-    return t ? t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim() : ""; 
+  function trocarAba(id, btn) {
+    document.querySelectorAll('.aba-content').forEach(a => a.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
   }
 
-  // 3. Função de ID Único (CORRIGIDA)
-  function obterOuGerarId(origemBairro) {
-    let idLoja = localStorage.getItem('idLojaAmmeep');
-    if (!idLoja) {
-      // Se não tiver bairro, usa "AM", se tiver, usa as 3 primeiras letras
-      const prefixo = (origemBairro && origemBairro.length >= 3) ? origemBairro.substring(0, 3).toUpperCase() : "AM";
-      const num = Math.floor(1000 + Math.random() * 9000);
-      idLoja = `${prefixo}-${num}`;
-      localStorage.setItem('idLojaAmmeep', idLoja);
-    }
-    const campoId = document.getElementById('valId');
-    if(campoId) campoId.innerText = idLoja;
-    return idLoja;
-  }
+  function limparTexto(t) { return t ? t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim() : ""; }
 
-  // 4. Função de Cálculo Principal
   function calcular() {
     const origem = document.getElementById('bairroOrigem').value;
     const destinoDigitado = limparTexto(document.getElementById('bairroDestino').value);
     const enderecoEntrega = limparTexto(document.getElementById('enderecoEntrega').value);
     const querVolta = document.getElementById('volta').value === "Sim";
-    
-    let taxaBase = 0; 
-    let sucesso = false;
+    let taxaBase = 0, sucesso = false;
 
     if (origem && dadosTabelas[origem]) {
       const destinos = dadosTabelas[origem];
-      const condoKey = Object.keys(destinos).find(c => 
-        c.startsWith("CONDOMINIO:") && 
-        enderecoEntrega.includes(limparTexto(c.replace("CONDOMINIO:", "")))
-      );
+      // PRIORIDADE CONDOMÍNIOS
+      const condoKey = Object.keys(destinos).find(c => c.startsWith("CONDOMINIO:") && enderecoEntrega.includes(limparTexto(c.replace("CONDOMINIO:", ""))));
       
       if (condoKey) { 
-        taxaBase = destinos[condoKey]; 
-        sucesso = true; 
+        taxaBase = destinos[condoKey]; sucesso = true; 
       } else {
         const bairroKey = Object.keys(destinos).find(b => limparTexto(b) === destinoDigitado);
         if (bairroKey) { taxaBase = destinos[bairroKey]; sucesso = true; }
       }
     }
-
     const valorVolta = querVolta ? ADICIONAL_VOLTA : 0;
     const total = taxaBase + valorVolta;
-
     document.getElementById('res-base').innerText = `R$ ${taxaBase.toFixed(2).replace('.', ',')}`;
     document.getElementById('res-volta').innerText = `R$ ${valorVolta.toFixed(2).replace('.', ',')}`;
     document.getElementById('res-total').innerText = sucesso ? `R$ ${total.toFixed(2).replace('.', ',')}` : "---";
-    
-    return { taxaBase, valorVolta, total, sucesso };
-  }
-// --- FUNÇÃO DE DETECÇÃO AMMEEP (v1.6.6) ---
-  // Esta versão garante a leitura do JSON comparando chaves limpas
-  document.getElementById('enderecoRetirada').addEventListener('input', function() {
-    const seletor = document.getElementById('bairroOrigem');
-    const aviso = document.getElementById('avisoDeteccao');
-    
-    aviso.style.display = "none";
-    seletor.value = ""; 
-
-    const textoDigitado = limparTexto(this.value);
-    if (!textoDigitado.trim()) return;
-
-    // 1. LISTA DE BAIRROS DO SEU JSON (Chaves principais)
-    const bairrosNoJson = Object.keys(dadosTabelas);
-
-    // 2. BUSCA INTELIGENTE (Prioriza nomes maiores para evitar conflitos)
-    // Primeiro tentamos encontrar os nomes "NOVO ..." ou "NOVA ..."
-    let encontrado = bairrosNoJson
-      .sort((a, b) => b.length - a.length) // Ordena do nome maior para o menor
-      .find(b => {
-        const bairroChaveLimpo = limparTexto(b);
-        // Verifica se o bairro existe no texto como uma palavra isolada
-        const regexBairro = new RegExp("\\b" + bairroChaveLimpo + "\\b", "i");
-        return regexBairro.test(textoDigitado);
-      });
-
-    // 3. SE ENCONTROU, ATIVA A TABELA
-    if (encontrado) {
-      seletor.value = encontrado; // Seleciona no <select>
-      aviso.className = "sucesso-detec"; 
-      aviso.style.display = "block";
-      aviso.innerHTML = `✅ Tabela ${encontrado} Ativada`;
-      
-      // Funções de suporte
-      obterOuGerarId(encontrado);
-      calcular(); 
-    } else {
-      aviso.innerText = "Aguardando endereço... (Bairro não detectado)";
-      aviso.className = ""; 
-      aviso.style.display = "block";
-    }
-  });
-  
-
-  function ativarTabelaVisual(bairro, icone) {
-    const seletor = document.getElementById('bairroOrigem');
-    const aviso = document.getElementById('avisoDeteccao');
-    seletor.value = bairro;
-    aviso.className = "sucesso-detec"; 
-    aviso.style.display = "block";
-    aviso.innerHTML = `✅ Tabela ${bairro} Ativada ${icone}`;
-    obterOuGerarId(bairro);
-    calcular();
+    return { taxaBase, valorVolta, total, sucesso, tabela: origem };
   }
 
-  // Eventos de atualização
   document.getElementById('bairroDestino').addEventListener('input', calcular);
   document.getElementById('enderecoEntrega').addEventListener('input', calcular);
   document.getElementById('volta').addEventListener('change', calcular);
 
-  // Salvar Configuração
-  document.getElementById('salvarConfig').addEventListener('click', () => {
-    localStorage.setItem('origem', document.getElementById('bairroOrigem').value);
-    localStorage.setItem('endereco', document.getElementById('enderecoRetirada').value);
-    alert("Configuração Salva com Sucesso!");
+  document.getElementById('enderecoRetirada').addEventListener('input', function() {
+    const seletor = document.getElementById('bairroOrigem');
+    const aviso = document.getElementById('avisoDeteccao');
+    const textoDigitado = limparTexto(this.value);
+    const bairros = Object.keys(dadosTabelas);
+    let encontrado = bairros.sort((a,b) => b.length - a.length).find(b => {
+       return new RegExp("\\b" + limparTexto(b) + "\\b", "i").test(textoDigitado);
+    });
+    if (encontrado) {
+      seletor.value = encontrado;
+      aviso.className = "sucesso-detec"; aviso.style.display = "block";
+      aviso.innerHTML = `✅ Tabela ${encontrado} Ativada`;
+      let idLoja = localStorage.getItem('idLojaAmmeep');
+      if(!idLoja) {
+         idLoja = encontrado.substring(0,3).toUpperCase() + "-" + Math.floor(1000+Math.random()*9000);
+         localStorage.setItem('idLojaAmmeep', idLoja);
+      }
+      document.getElementById('valId').innerText = idLoja;
+      calcular();
+    }
   });
 
+  document.getElementById('salvarConfig').onclick = () => {
+    localStorage.setItem('origem', document.getElementById('bairroOrigem').value);
+    localStorage.setItem('endereco', document.getElementById('enderecoRetirada').value);
+    alert("Configurações salvas!");
+  };
+
   function carregarConfiguracao() {
-    const o = localStorage.getItem('origem'); 
-    const e = localStorage.getItem('endereco');
+    const o = localStorage.getItem('origem'), e = localStorage.getItem('endereco');
     if(o) { 
       document.getElementById('bairroOrigem').value = o; 
-      const aviso = document.getElementById('avisoDeteccao');
-      aviso.style.display = "block"; 
-      aviso.className = "sucesso-detec";
-      aviso.innerHTML = `✅ Tabela ${o} Ativada`; 
-      obterOuGerarId(o);
+      document.getElementById('avisoDeteccao').style.display = "block";
+      document.getElementById('avisoDeteccao').className = "sucesso-detec";
+      document.getElementById('avisoDeteccao').innerHTML = `✅ Tabela ${o} Ativada`;
+      document.getElementById('valId').innerText = localStorage.getItem('idLojaAmmeep') || "...";
     }
     if(e) document.getElementById('enderecoRetirada').value = e;
   }
 
-  // Envio do Pedido
   document.getElementById('pedidoForm').onsubmit = function(e) {
     e.preventDefault();
-    const termoAceito = confirm("📢 AVISO IMPORTANTE AMMEEP:\n\nNossa entrega é feita até a PORTARIA ou BLOCO do cliente.\n⚠️ NÃO SUBIMOS.\n\nAo clicar em OK, você confirma que o cliente está ciente.");
-    if (!termoAceito) return; 
-
-    const { taxaBase, valorVolta, total, sucesso } = calcular();
-    const tabelaAtiva = document.getElementById('bairroOrigem').value;
-    const idLoja = localStorage.getItem('idLojaAmmeep') || "ID-GERANDO";
-
-    if(!sucesso || total <= 0) return alert("Bairro ou Condomínio não identificado!");
-
-    const nomeLoja = document.getElementById('enderecoRetirada').value;
-    const nomeCliente = document.getElementById('nomeCliente').value;
-    const enderecoEntrega = document.getElementById('enderecoEntrega').value;
-    const bairroDestino = document.getElementById('bairroDestino').value;
-
-    const dadosParaBanco = { idLoja, loja: nomeLoja, cliente: nomeCliente, destino: enderecoEntrega + " (" + bairroDestino + ")", valor: total };
+    if (!confirm("📢 AVISO AMMEEP: Entrega até PORTARIA. Não subimos.")) return;
+    const calc = calcular();
+    if(!calc.sucesso) return alert("Erro no cálculo da taxa.");
     
-    fetch(URL_PLANILHA, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dadosParaBanco) })
-    .catch(err => console.error(err));
+    const cliente = document.getElementById('nomeCliente').value;
+    const endEntrega = document.getElementById('enderecoEntrega').value;
+    const bairro = document.getElementById('bairroDestino').value;
+    const lojaEnd = document.getElementById('enderecoRetirada').value;
 
-    const msg = `*Solicitação Padrão de Entrega*\n\n*RETIRADA:*\n${nomeLoja}\n_(ID: ${idLoja} | Tabela: ${tabelaAtiva})_\n\n*CLIENTE:* ${nomeCliente}\n*ENDEREÇO:* ${enderecoEntrega}\n*BAIRRO:* ${bairroDestino}\n\n*VALORES:*\nEntrega: R$ ${taxaBase.toFixed(2).replace('.', ',')}\nVolta: R$ ${valorVolta.toFixed(2).replace('.', ',')}\n*TOTAL: R$ ${total.toFixed(2).replace('.', ',')}*\n\n*AMMEEP – PARÁ*`;
+    // ENVIO PARA PLANILHA
+    fetch(URL_PLANILHA, { 
+      method: 'POST', mode: 'no-cors', 
+      body: JSON.stringify({ 
+        ID_LOJA: localStorage.getItem('idLojaAmmeep'), 
+        NOME_ESTABELECIMENTO: lojaEnd, 
+        CLIENTE: cliente, 
+        ENDERECO_COMPLETO: endEntrega + " (" + bairro + ")",
+        TABELA_ORIGEM: calc.tabela,
+        TAXA_MOTOBOY: calc.total
+      }) 
+    });
+
+    // MENSAGEM PADRÃO SOLICITADA
+    const msg = `*Solicitação Padrão de Entrega*\n\n` +
+                `*RETIRADA:*\n${lojaEnd}\n\n` +
+                `( Tabela: ${calc.tabela})\n\n` +
+                `*CLIENTE:* ${cliente}\n` +
+                `*ENDEREÇO:* ${endEntrega}\n` +
+                `*BAIRRO:* ${bairro}\n\n` +
+                `*VALORES:*\n` +
+                `Entrega: R$ ${calc.taxaBase.toFixed(2).replace('.', ',')}\n` +
+                `Volta: R$ ${calc.valorVolta.toFixed(2).replace('.', ',')}\n` +
+                `*TOTAL: R$ ${calc.total.toFixed(2).replace('.', ',')}*\n\n` +
+                `AMMEEP – PARÁ\n\n` +
+                `📦 Solicite seu entrega pelo App:\n` +
+                `https://ammeeppa-crypto.github.io/solicitacao-entregas/`;
 
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    this.reset();
   };
 
+  async function carregarDadosPlanilha() {
+    const id = localStorage.getItem('idLojaAmmeep'), inicio = document.getElementById('dataInicio').value, fim = document.getElementById('dataFim').value;
+    const corpo = document.getElementById('corpoTabela');
+    corpo.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Sincronizando...</td></tr>";
+    try {
+      const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
+      const dados = await res.json();
+      corpo.innerHTML = ""; let soma = 0;
+      dados.reverse().forEach(p => {
+        const dataP = p.data.split('T')[0];
+        if (dataP >= inicio && dataP <= fim) {
+          soma += p.taxa;
+          corpo.innerHTML += `<tr>
+            <td>${new Date(p.data).toLocaleDateString('pt-BR')}</td>
+            <td>${p.cliente}</td>
+            <td>${p.tabela || '---'}</td>
+            <td>R$ ${p.taxa.toFixed(2).replace('.', ',')}</td>
+          </tr>`;
+        }
+      });
+      document.getElementById('resumoTotal').innerText = `R$ ${soma.toFixed(2).replace('.', ',')}`;
+      if (corpo.innerHTML === "") corpo.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Vazio.</td></tr>";
+    } catch (e) { corpo.innerHTML = "<tr><td colspan='4'>Erro na conexão.</td></tr>"; }
+  }
 </script>
 </body>
 </html>
-
