@@ -132,7 +132,7 @@
       
       <div id="resumoTotal" style="text-align:center; font-weight:bold; color:#0f5dc2; margin:15px 0; font-size:22px;">R$ 0,00</div>
       <table>
-        <thead><tr><th>Data</th><th>Cliente</th><th>Tabela</th><th>Valor</th></tr></thead>
+        <thead><tr><th>Data</th><th>Cliente</th><th>Endereço</th><th>Tabela</th><th>Valor</th></tr></thead>
         <tbody id="corpoTabela"><tr><td colspan="4" style="text-align:center;">Filtre para ver os dados.</td></tr></tbody>
       </table>
       <button onclick="window.print()" class="btn-cinza">🖨️ IMPRIMIR RELATÓRIO A4</button>
@@ -150,7 +150,7 @@
 <script>
   let dadosTabelas = {};
   const ADICIONAL_VOLTA = 4.00;
-  const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbxZssBcupea8mOjRSUT-z7Jki-5UY804YsLEa6neHr4l6ulsW5ao4zmC-flqovfBaF2/exec";
+  const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbymExcxsqZ-gSMESEzDc8dMcLtQBpZVR6qYjGB5zZQqSgnAYFQLDyhrZ-5Nl1mS5lRY3Q/exec";
 
   fetch('./tabelas.json').then(res => res.json()).then(data => { 
       dadosTabelas = data; carregarConfiguracao(); 
@@ -274,8 +274,9 @@
                 `Entrega: R$ ${calc.taxaBase.toFixed(2).replace('.', ',')}\n` +
                 `Volta: R$ ${calc.valorVolta.toFixed(2).replace('.', ',')}\n` +
                 `*TOTAL: R$ ${calc.total.toFixed(2).replace('.', ',')}*\n\n` +
-                `AMMEEP – PARÁ\n\n` +;
-                
+                `AMMEEP – @AsGama\n\n` +
+                `📦 Solicite sua entrega pelo App:\n` +
+                `https://ammeeppa-crypto.github.io/solicitacao-entregas/`;
 
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     this.reset();
@@ -294,11 +295,12 @@
         if (dataP >= inicio && dataP <= fim) {
           soma += p.taxa;
           corpo.innerHTML += `<tr>
-            <td>${new Date(p.data).toLocaleDateString('pt-BR')}</td>
-            <td>${p.cliente}</td>
-            <td>${p.tabela || '---'}</td>
-            <td>R$ ${p.taxa.toFixed(2).replace('.', ',')}</td>
-          </tr>`;
+  <td>${new Date(p.data).toLocaleDateString('pt-BR')}</td>
+  <td>${p.cliente}</td>
+  <td>${p.endereco || '---'}</td>
+  <td>${p.tabela || '---'}</td>
+  <td>R$ ${p.taxa.toFixed(2).replace('.', ',')}</td>
+</tr>`;
         }
       });
       document.getElementById('resumoTotal').innerText = `R$ ${soma.toFixed(2).replace('.', ',')}`;
