@@ -166,6 +166,7 @@
       </div>
 
       <div class="card-dark">
+        <div id="insightFinanceiro" style="margin-top:10px; font-size:11px; font-weight:bold; color:#0f5dc2; text-align:center;"></div>
         <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
           <div id="container-grafico">
              <canvas id="graficoBairros"></canvas>
@@ -351,39 +352,81 @@
     } catch (e) { corpo.innerHTML = "<tr><td colspan='5'>Erro na conexão.</td></tr>"; }
   }
 
-  async function processarFinanceiro() {
-    const id = localStorage.getItem('idLojaAmmeep');
-    const inicio = document.getElementById('dataInicioF').value;
-    const fim = document.getElementById('dataFimF').value;
-    const listaRanking = document.getElementById('listaRanking');
-    listaRanking.innerHTML = "<tr><td>Processando...</td></tr>";
+ async function processarFinanceiro() {
+  const id = localStorage.getItem('idLojaAmmeep');
+  const inicio = document.getElementById('dataInicioF').value;
+  const fim = document.getElementById('dataFimF').value;
+  const listaRanking = document.getElementById('listaRanking');
+  listaRanking.innerHTML = "<tr><td>Processando...</td></tr>";
 
-    try {
-      const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
-      const dados = await res.json();
-      let totalGeral = 0, totalEntregas = 0, bairrosData = {};
+  try {
+    const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
+    const dados = await res.json();
 
-      dados.forEach(p => {
-        const dataP = p.data.split('T')[0];
-        if (dataP >= inicio && dataP <= fim) {
-          const valor = parseFloat(p.taxa || 0);
-          const bairro = (p.endereco && p.endereco.includes('(')) ? p.endereco.split('(')[1].replace(')', '').trim().toUpperCase() : "DIVERSOS";
-          totalGeral += valor; totalEntregas++;
-          bairrosData[bairro] = (bairrosData[bairro] || 0) + valor;
-        }
-      });
+    let totalGeral = 0, totalEntregas = 0;
+    let bairrosData = {}, bairrosQtd = {};
 
-      document.getElementById('fin-total-taxas').innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
-      document.getElementById('fin-total-entregas').innerText = totalEntregas;
+    dados.forEach(p => {
+      const dataP = p.data.split('T')[0];
 
-      const rankingOrdenado = Object.entries(bairrosData).sort((a, b) => b[1] - a[1]);
-      listaRanking.innerHTML = "";
-      rankingOrdenado.slice(0, 5).forEach(item => {
-        listaRanking.innerHTML += `<tr><td style="padding: 4px 0;">${item[0]}</td><td style="text-align:right;">R$ ${item[1].toFixed(2)}</td></tr>`;
-      });
-      gerarGraficoFinanceiro(rankingOrdenado);
-    } catch (e) { listaRanking.innerHTML = "<tr><td>Erro ao carregar.</td></tr>"; }
+      if (dataP >= inicio && dataP <= fim) {
+        const valor = parseFloat(p.taxa || 0);
+
+        const bairro = (p.endereco && p.endereco.includes('('))
+          ? p.endereco.split('(')[1].replace(')', '').trim().toUpperCase()
+          : "DIVERSOS";
+
+        totalGeral += valor;
+        totalEntregas++;
+
+        bairrosData[bairro] = (bairrosData[bairro] || 0) + valor;
+        bairrosQtd[bairro] = (bairrosQtd[bairro] || 0) + 1;
+      }
+    });
+
+    document.getElementById('fin-total-taxas').innerText =
+      `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+
+    document.getElementById('fin-total-entregas').innerText =
+      totalEntregas;
+
+    const rankingOrdenado = Object.entries(bairrosData)
+      .sort((a, b) => b[1] - a[1]);
+
+    listaRanking.innerHTML = "";
+
+    const emojis = ["🥇", "🥈", "🥉", "🏅", "🏅"];
+
+    rankingOrdenado.slice(0, 5).forEach((item, index) => {
+      listaRanking.innerHTML += `
+        <tr>
+          <td style="padding: 4px 0;">
+            ${emojis[index] || "•"} ${item[0]}
+          </td>
+          <td style="text-align:right;">
+            R$ ${item[1].toFixed(2)}
+          </td>
+        </tr>
+      `;
+    });
+
+    // 🧠 Insight inteligente
+    if (rankingOrdenado.length > 0) {
+      const top = rankingOrdenado[0];
+      const bairroTop = top[0];
+      const valorTop = top[1];
+      const qtdTop = bairrosQtd[bairroTop] || 0;
+
+      document.getElementById("insightFinanceiro").innerText =
+        `🏆 Bairro mais forte: ${bairroTop} (R$ ${valorTop.toFixed(2)} em ${qtdTop} entregas)`;
+    }
+
+    gerarGraficoFinanceiro(rankingOrdenado);
+
+  } catch (e) {
+    listaRanking.innerHTML = "<tr><td>Erro ao carregar.</td></tr>";
   }
+}
 
   function gerarGraficoFinanceiro(dados) {
     const ctx = document.getElementById('graficoBairros').getContext('2d');
