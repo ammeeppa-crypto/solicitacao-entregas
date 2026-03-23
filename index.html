@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#0f5dc2">
   <title>AMMEEP - Sistema de Entrega 2026</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #050120fd; color: #333; padding-bottom: 100px; }
     header { position: relative; height: 180px; overflow: hidden; border-radius: 0 0 20px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
@@ -37,6 +38,12 @@
     .btn-verde { background: linear-gradient(135deg, #0cbd15, #088a0f); margin-top: 10px; }
     .btn-cinza { background: linear-gradient(135deg, #666, #444); margin-top: 15px; }
 
+    /* AJUSTES FINOS FINANCEIRO */
+    .btn-financeiro-slim { padding: 10px !important; font-size: 14px !important; margin-top: 5px; }
+    .mini-card-slim { padding: 8px 5px !important; }
+    .mini-card-slim span { font-size: 9px !important; margin-bottom: 2px !important; }
+    .mini-card-slim b { font-size: 14px !important; }
+
     .filtro-periodo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; background: #f0f4f8; padding: 12px; border-radius: 10px; border: 1px solid #bcd; }
     .filtro-periodo label { font-size: 10px; font-weight: bold; color: #0f5dc2; display: block; margin-bottom: 4px; }
     .filtro-periodo input { margin-bottom: 0; padding: 10px; border: 1px solid #cbd; }
@@ -45,19 +52,17 @@
     th { background: #0f5dc2; color: white; padding: 12px 5px; text-align: left; }
     td { padding: 10px 5px; border-bottom: 1px solid #eee; }
 
-    #resumoFinanceiro { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #0f5dc2; margin-bottom: 15px; }
-    .linha-resumo { display: flex; justify-content: space-between; margin-bottom: 5px; }
-    .total-destaque { font-weight: bold; font-size: 18px; color: #0f5dc2; border-top: 2px solid #0f5dc2; padding-top: 8px; }
-
-    .assinatura { text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 20px; letter-spacing: 2px; }
-
-    @media print {
-      body { background: white !important; padding: 0; }
-      header, .bottom-nav, .btn-filtrar, .filtro-periodo, .btn-cinza, #salvarConfig, .assinatura { display: none !important; }
-      .card { box-shadow: none; border: none; width: 100%; }
-      table { width: 100% !important; border: 1px solid #000; }
-      th, td { border: 1px solid #000; color: black !important; padding: 8px; }
+    .card-dark { 
+      background: #1a1a2e; color: white; border-radius: 15px; 
+      padding: 10px; margin-top: 15px; 
     }
+
+    .grid-financeiro { display: flex; gap: 8px; margin-bottom: 12px; margin-top: 10px; }
+    .mini-card { flex: 1; border-radius: 10px; text-align: center; }
+    
+    #container-grafico { max-width: 130px; margin: 0 auto; }
+    
+    .assinatura { text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 20px; letter-spacing: 2px; }
 
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #ddd; z-index: 9999; }
     .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #777; font-size: 11px; flex: 1; border: none; background: none; cursor: pointer; }
@@ -110,10 +115,10 @@
           <option value="Não">Vai precisar de Volta? Não</option>
           <option value="Sim">Vai precisar de Volta? Sim (+ R$ 4,00)</option>
         </select>
-        <div id="resumoFinanceiro">
-          <div class="linha-resumo"><span>Taxa de Entrega:</span> <span id="res-base">R$ 0,00</span></div>
-          <div class="linha-resumo"><span>Adicional Volta:</span> <span id="res-volta">R$ 0,00</span></div>
-          <div class="linha-resumo total-destaque"><span>TOTAL:</span> <span id="res-total">---</span></div>
+        <div id="resumoFinanceiro" style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #0f5dc2; margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Taxa de Entrega:</span> <span id="res-base">R$ 0,00</span></div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Adicional Volta:</span> <span id="res-volta">R$ 0,00</span></div>
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #0f5dc2; border-top: 2px solid #0f5dc2; padding-top: 8px;"><span>TOTAL:</span> <span id="res-total">---</span></div>
         </div>
         <button type="submit" class="btn-verde">🚀 SOLICITAR ENTREGADOR</button>
       </form>
@@ -133,9 +138,46 @@
       <div id="resumoTotal" style="text-align:center; font-weight:bold; color:#0f5dc2; margin:15px 0; font-size:22px;">R$ 0,00</div>
       <table>
         <thead><tr><th>Data</th><th>Cliente</th><th>Endereço</th><th>Tabela</th><th>Valor</th></tr></thead>
-        <tbody id="corpoTabela"><tr><td colspan="4" style="text-align:center;">Filtre para ver os dados.</td></tr></tbody>
+        <tbody id="corpoTabela"><tr><td colspan="5" style="text-align:center;">Filtre para ver os dados.</td></tr></tbody>
       </table>
       <button onclick="window.print()" class="btn-cinza">🖨️ IMPRIMIR RELATÓRIO A4</button>
+    </div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026</div>
+  </div>
+
+  <div id="aba-financeiro" class="aba-content">
+    <div class="card">
+      <h3 style="font-size: 14px;">Análise Financeira</h3>
+      <div class="filtro-periodo" style="gap: 8px; padding: 8px; margin-bottom: 5px;">
+        <div><label>INÍCIO</label><input type="date" id="dataInicioF" style="font-size: 12px; padding: 8px;"></div>
+        <div><label>FIM</label><input type="date" id="dataFimF" style="font-size: 12px; padding: 8px;"></div>
+      </div>
+      <button class="btn-azul btn-financeiro-slim" onclick="processarFinanceiro()">🔍 ANALISAR DADOS</button>
+
+      <div class="grid-financeiro">
+        <div class="mini-card mini-card-slim" style="background: #2e7d32; color: white;">
+          <span>TAXAS</span>
+          <b id="fin-total-taxas">R$ 0,00</b>
+        </div>
+        <div class="mini-card mini-card-slim" style="background: #1565c0; color: white;">
+          <span>ENTREGAS</span>
+          <b id="fin-total-entregas">0</b>
+        </div>
+      </div>
+
+      <div class="card-dark">
+        <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
+          <div id="container-grafico">
+             <canvas id="graficoBairros"></canvas>
+          </div>
+          <div style="flex: 1; min-width: 0;">
+            <p style="font-size: 9px; margin-bottom: 5px; color: #aaa; text-align:center; font-weight: bold;">RANKING</p>
+            <table style="background: transparent; color: white; width: 100%; font-size: 9px; border-collapse: collapse;">
+              <tbody id="listaRanking"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="assinatura">AMMEEP DELIVERY - 2026</div>
   </div>
@@ -143,12 +185,13 @@
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-house"></i><span>Painel</span></button>
     <button class="nav-item" onclick="trocarAba('aba-pedidos', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Relatório</span></button>
-    <button class="nav-item" onclick="trocarAba('aba-pedidos', this)"><i class="fa-solid fa-chart-line"></i><span>Financeiro</span></button>
+    <button class="nav-item" onclick="trocarAba('aba-financeiro', this)"><i class="fa-solid fa-chart-line"></i><span>Financeiro</span></button>
     <button class="nav-item" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-user-gear"></i><span>Perfil</span></button>
   </nav>
 
 <script>
   let dadosTabelas = {};
+  let chartFinanceiro = null;
   const ADICIONAL_VOLTA = 4.00;
   const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbymExcxsqZ-gSMESEzDc8dMcLtQBpZVR6qYjGB5zZQqSgnAYFQLDyhrZ-5Nl1mS5lRY3Q/exec";
 
@@ -157,6 +200,8 @@
       const hoje = new Date().toISOString().split('T')[0];
       document.getElementById('dataInicio').value = hoje;
       document.getElementById('dataFim').value = hoje;
+      document.getElementById('dataInicioF').value = hoje;
+      document.getElementById('dataFimF').value = hoje;
   });
 
   function trocarAba(id, btn) {
@@ -177,7 +222,6 @@
 
     if (origem && dadosTabelas[origem]) {
       const destinos = dadosTabelas[origem];
-      // PRIORIDADE CONDOMÍNIOS
       const condoKey = Object.keys(destinos).find(c => c.startsWith("CONDOMINIO:") && enderecoEntrega.includes(limparTexto(c.replace("CONDOMINIO:", ""))));
       
       if (condoKey) { 
@@ -250,7 +294,6 @@
     const bairro = document.getElementById('bairroDestino').value;
     const lojaEnd = document.getElementById('enderecoRetirada').value;
 
-    // ENVIO PARA PLANILHA
     fetch(URL_PLANILHA, { 
       method: 'POST', mode: 'no-cors', 
       body: JSON.stringify({ 
@@ -263,7 +306,6 @@
       }) 
     });
 
-    // MENSAGEM PADRÃO SOLICITADA
     const msg = `*Solicitação Padrão de Entrega*\n\n` +
                 `*RETIRADA:*\n${lojaEnd}\n\n` +
                 `( Tabela: ${calc.tabela})\n\n` +
@@ -274,7 +316,7 @@
                 `Entrega: R$ ${calc.taxaBase.toFixed(2).replace('.', ',')}\n` +
                 `Volta: R$ ${calc.valorVolta.toFixed(2).replace('.', ',')}\n` +
                 `*TOTAL: R$ ${calc.total.toFixed(2).replace('.', ',')}*\n\n` +
-                `AMMEEP –Pará\n\n` +
+                `AMMEEP –Pará \n\n` +
                 `📦 Solicite sua entrega pelo App:\n` +
                 `https://ammeeppa-crypto.github.io/solicitacao-entregas/`;
 
@@ -285,7 +327,7 @@
   async function carregarDadosPlanilha() {
     const id = localStorage.getItem('idLojaAmmeep'), inicio = document.getElementById('dataInicio').value, fim = document.getElementById('dataFim').value;
     const corpo = document.getElementById('corpoTabela');
-    corpo.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Sincronizando...</td></tr>";
+    corpo.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Sincronizando...</td></tr>";
     try {
       const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
       const dados = await res.json();
@@ -293,19 +335,73 @@
       dados.reverse().forEach(p => {
         const dataP = p.data.split('T')[0];
         if (dataP >= inicio && dataP <= fim) {
-          soma += p.taxa;
+          const valorTaxa = parseFloat(p.taxa || 0);
+          soma += valorTaxa;
           corpo.innerHTML += `<tr>
-  <td>${new Date(p.data).toLocaleDateString('pt-BR')}</td>
-  <td>${p.cliente}</td>
-  <td>${p.endereco || '---'}</td>
-  <td>${p.tabela || '---'}</td>
-  <td>R$ ${p.taxa.toFixed(2).replace('.', ',')}</td>
-</tr>`;
+            <td>${new Date(p.data).toLocaleDateString('pt-BR')}</td>
+            <td>${p.cliente}</td>
+            <td>${p.endereco || '---'}</td>
+            <td>${p.tabela || '---'}</td>
+            <td>R$ ${valorTaxa.toFixed(2).replace('.', ',')}</td>
+          </tr>`;
         }
       });
       document.getElementById('resumoTotal').innerText = `R$ ${soma.toFixed(2).replace('.', ',')}`;
-      if (corpo.innerHTML === "") corpo.innerHTML = "<tr><td colspan='4' style='text-align:center;'>Vazio.</td></tr>";
-    } catch (e) { corpo.innerHTML = "<tr><td colspan='4'>Erro na conexão.</td></tr>"; }
+      if (corpo.innerHTML === "") corpo.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Vazio.</td></tr>";
+    } catch (e) { corpo.innerHTML = "<tr><td colspan='5'>Erro na conexão.</td></tr>"; }
+  }
+
+  async function processarFinanceiro() {
+    const id = localStorage.getItem('idLojaAmmeep');
+    const inicio = document.getElementById('dataInicioF').value;
+    const fim = document.getElementById('dataFimF').value;
+    const listaRanking = document.getElementById('listaRanking');
+    listaRanking.innerHTML = "<tr><td>Processando...</td></tr>";
+
+    try {
+      const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
+      const dados = await res.json();
+      let totalGeral = 0, totalEntregas = 0, bairrosData = {};
+
+      dados.forEach(p => {
+        const dataP = p.data.split('T')[0];
+        if (dataP >= inicio && dataP <= fim) {
+          const valor = parseFloat(p.taxa || 0);
+          const bairro = (p.endereco && p.endereco.includes('(')) ? p.endereco.split('(')[1].replace(')', '').trim().toUpperCase() : "DIVERSOS";
+          totalGeral += valor; totalEntregas++;
+          bairrosData[bairro] = (bairrosData[bairro] || 0) + valor;
+        }
+      });
+
+      document.getElementById('fin-total-taxas').innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
+      document.getElementById('fin-total-entregas').innerText = totalEntregas;
+
+      const rankingOrdenado = Object.entries(bairrosData).sort((a, b) => b[1] - a[1]);
+      listaRanking.innerHTML = "";
+      rankingOrdenado.slice(0, 5).forEach(item => {
+        listaRanking.innerHTML += `<tr><td style="padding: 4px 0;">${item[0]}</td><td style="text-align:right;">R$ ${item[1].toFixed(2)}</td></tr>`;
+      });
+      gerarGraficoFinanceiro(rankingOrdenado);
+    } catch (e) { listaRanking.innerHTML = "<tr><td>Erro ao carregar.</td></tr>"; }
+  }
+
+  function gerarGraficoFinanceiro(dados) {
+    const ctx = document.getElementById('graficoBairros').getContext('2d');
+    const labels = dados.slice(0, 5).map(i => i[0]);
+    const valores = dados.slice(0, 5).map(i => i[1]);
+    if (chartFinanceiro) chartFinanceiro.destroy();
+    chartFinanceiro = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: valores,
+          backgroundColor: ['#0f5dc2', '#0cbd15', '#ffc107', '#e91e63', '#9c27b0'],
+          borderWidth: 1, borderColor: '#1a1a2e'
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, maintainAspectRatio: true, responsive: true }
+    });
   }
 </script>
 </body>
