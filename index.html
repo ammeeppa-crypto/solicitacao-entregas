@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #050120fd; color: #333; padding-bottom: 100px; }
+    body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #010124; color: #333; padding-bottom: 100px; }
     header { position: relative; height: 180px; overflow: hidden; border-radius: 0 0 20px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     #hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); z-index: 1; object-fit: cover; }
     header img { width: 130px; position: relative; z-index: 2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
@@ -45,11 +45,11 @@
     .mini-card-slim b { font-size: 14px !important; }
 
     .filtro-periodo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; background: #f0f4f8; padding: 12px; border-radius: 10px; border: 1px solid #bcd; }
-    .filtro-periodo label { font-size: 10px; font-weight: bold; color: #0f5dc2; display: block; margin-bottom: 4px; }
+    .filtro-periodo label { font-size: 10px; font-weight: bold; color: #000000; display: block; margin-bottom: 4px; }
     .filtro-periodo input { margin-bottom: 0; padding: 10px; border: 1px solid #cbd; }
 
     table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; }
-    th { background: #0f5dc2; color: white; padding: 12px 5px; text-align: left; }
+    th { background: #0a39d4; color: white; padding: 12px 5px; text-align: left; }
     td { padding: 10px 5px; border-bottom: 1px solid #eee; }
 
     .card-dark { 
@@ -66,8 +66,8 @@
 
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #ddd; z-index: 9999; }
     .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #777; font-size: 11px; flex: 1; border: none; background: none; cursor: pointer; }
-    .nav-item i { font-size: 20px; margin-bottom: 5px; color: #0f5dc2; }
-    .nav-item.active { color: #0f5dc2; font-weight: bold; }
+    .nav-item i { font-size: 20px; margin-bottom: 5px; color:#0a39d4 ; }
+    .nav-item.active { color: #000000; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -115,15 +115,15 @@
           <option value="Não">Vai precisar de Volta? Não</option>
           <option value="Sim">Vai precisar de Volta? Sim (+ R$ 4,00)</option>
         </select>
-        <div id="resumoFinanceiro" style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #0f5dc2; margin-bottom: 15px;">
+        <div id="resumoFinanceiro" style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #c20f0f; margin-bottom: 15px;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Taxa de Entrega:</span> <span id="res-base">R$ 0,00</span></div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Adicional Volta:</span> <span id="res-volta">R$ 0,00</span></div>
-          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #0f5dc2; border-top: 2px solid #0f5dc2; padding-top: 8px;"><span>TOTAL:</span> <span id="res-total">---</span></div>
+          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #c20f0f; border-top: 2px solid #0f5dc2; padding-top: 8px;"><span>TOTAL:</span> <span id="res-total">---</span></div>
         </div>
         <button type="submit" class="btn-verde">🚀 SOLICITAR ENTREGADOR</button>
       </form>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.5</div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.6</div>
   </div>
 
   <div id="aba-pedidos" class="aba-content">
@@ -159,7 +159,7 @@
           <span>TAXAS</span>
           <b id="fin-total-taxas">R$ 0,00</b>
         </div>
-        <div class="mini-card mini-card-slim" style="background: #1565c0; color: white;">
+        <div class="mini-card mini-card-slim" style="background: #000205; color: white;">
           <span>ENTREGAS</span>
           <b id="fin-total-entregas">0</b>
         </div>
@@ -317,9 +317,8 @@
                 `Entrega: R$ ${calc.taxaBase.toFixed(2).replace('.', ',')}\n` +
                 `Volta: R$ ${calc.valorVolta.toFixed(2).replace('.', ',')}\n` +
                 `*TOTAL: R$ ${calc.total.toFixed(2).replace('.', ',')}*\n\n` +
-                `AMMEEP –Pará \n\n` +
-                `📦 Solicite sua entrega pelo App:\n` +
-                `https://ammeeppa-crypto.github.io/solicitacao-entregas/`;
+                `AMMEEP –Pará \n\n` ;
+                
 
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     this.reset();
@@ -397,18 +396,38 @@
 
     const emojis = ["🥇", "🥈", "🥉", "🏅", "🏅"];
 
-    rankingOrdenado.slice(0, 5).forEach((item, index) => {
-      listaRanking.innerHTML += `
-        <tr>
-          <td style="padding: 4px 0;">
-            ${emojis[index] || "•"} ${item[0]}
-          </td>
-          <td style="text-align:right;">
-            R$ ${item[1].toFixed(2)}
-          </td>
-        </tr>
-      `;
-    });
+    const cores = ['#0f5dc2', '#0cbd15', '#ffc107', '#e91e63', '#9c27b0'];
+
+rankingOrdenado.slice(0, 5).forEach((item, index) => {
+  
+  let icone = "";
+
+  if (index === 0) icone = "🥇";
+  else if (index === 1) icone = "🥈";
+  else if (index === 2) icone = "🥉";
+  else {
+    // bolinha com cor do gráfico
+    icone = `<span style="
+      display:inline-block;
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:${cores[index]};
+      margin-right:4px;
+    "></span>`;
+  }
+
+  listaRanking.innerHTML += `
+    <tr>
+      <td style="padding: 4px 0;">
+        ${icone} ${item[0]}
+      </td>
+      <td style="text-align:right;">
+        R$ ${item[1].toFixed(2)}
+      </td>
+    </tr>
+  `;
+});
 
     // 🧠 Insight inteligente
     if (rankingOrdenado.length > 0) {
