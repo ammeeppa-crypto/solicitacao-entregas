@@ -8,6 +8,8 @@
   <title>AMMEEP - Sistema de Entrega 2026</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
  <style>
     body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #010124; color: #333; padding-bottom: 100px; }
     header { position: relative; height: 180px; overflow: hidden; border-radius: 0 0 20px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
@@ -97,7 +99,7 @@
 
   <div id="aba-painel" class="aba-content active">
     <div class="card">
-      <h3>Nome da Loja e Endereço de coleta</h3>
+      <h3>Nome da Loja e Endereço</h3>
       <textarea id="enderecoRetirada" placeholder="Nome da Loja, Endereço e Bairro"></textarea>
       <div id="avisoDeteccao">Aguardando endereço...</div>
       <div id="exibeId" style="text-align:right; font-size:11px; margin-bottom:10px;">ID: <span id="valId">...</span></div>
@@ -134,7 +136,7 @@
   <form id="pedidoForm" autocomplete="off">
     <input type="text" id="nomeCliente" placeholder="Nome do cliente" required>
       <form id="pedidoForm" autocomplete="off">
-        <textarea id="enderecoEntrega" placeholder="Endereço da entrega (Rua, nº e Condomínio)" required></textarea>
+              <textarea id="enderecoEntrega" placeholder="Endereço da entrega (Rua, nº e Condomínio)" required></textarea>
         <input type="text" id="bairroDestino" placeholder="Bairro de destino" required>
         <select id="volta">
           <option value="Não">Vai precisar de Volta? Não</option>
@@ -146,9 +148,12 @@
           <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #c20f0f; border-top: 2px solid #0f5dc2; padding-top: 8px;"><span>TOTAL:</span> <span id="res-total">---</span></div>
         </div>
         <button type="submit" class="btn-verde">🚀 SOLICITAR ENTREGADOR</button>
+        <button onclick="iniciarTour()" style="width: auto; padding: 5px 15px; font-size: 12px; background: rgba(255,255,255,0.2); border: 1px solid white; margin-bottom: 10px;">
+                                                                ❓ Como usar o app?
+</button>
       </form>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.8</div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.6</div>
   </div>
 
   <div id="aba-pedidos" class="aba-content">
@@ -332,7 +337,7 @@
       }) 
     });
 
-    const msg = `**Solicitação Padrão de Entrega**\n\n` +
+    const msg = `*Solicitação Padrão de Entrega*\n\n` +
                 `*RETIRADA:*\n${lojaEnd}\n\n` +
                 `( Tabela: ${calc.tabela})\n\n` +
                 `*CLIENTE:* ${cliente}\n` +
@@ -567,6 +572,31 @@ document.addEventListener('click', function(e) {
     document.getElementById('listaSugestoes').style.display = "none";
   }
 });
+function iniciarTour() {
+  const driver = window.driver.js.driver;
+
+  const d = driver({
+    showProgress: true,
+    nextBtnText: 'Próximo',
+    prevBtnText: 'Anterior',
+    doneBtnText: 'Finalizar',
+    steps: [
+      { element: 'header', popover: { title: 'Bem-vindo!', description: 'Este é o seu painel AMMEEP. Aqui você gerencia suas solicitações de entregas.', position: 'bottom' } },
+      { element: '#filtroClientes', popover: { title: 'Lupa de Busca', description: 'Digite o nome de um cliente já cadastrado  aqui para preencher o endereço automaticamente!', position: 'bottom' } },
+      { element: '#pedidoForm', popover: { title: 'Novo Chamado', description: 'Preencha os dados e o sistema calcula a taxa na hora.', position: 'top' } },
+      { element: '.btn-verde', popover: { title: 'WhatsApp', description: 'Clique aqui para enviar os dados para o grupo dos motoboy disponíveis.', position: 'top' } },
+      { element: '.bottom-nav', popover: { title: 'Navegação', description: 'Mude entre o Painel, Relatórios e Financeiro por aqui.', position: 'top' } }
+    ]
+  });
+
+  d.drive();
+}
+
+// Opcional: Iniciar automaticamente na primeira vez que o lojista abrir
+if (!localStorage.getItem('tourFeito')) {
+  setTimeout(iniciarTour, 2000); // Espera 2 segundos para carregar o vídeo
+  localStorage.setItem('tourFeito', 'true');
+}
 </script>
 </body>
 </html>
