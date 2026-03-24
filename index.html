@@ -8,7 +8,7 @@
   <title>AMMEEP - Sistema de Entrega 2026</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
+ <style>
     body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #010124; color: #333; padding-bottom: 100px; }
     header { position: relative; height: 180px; overflow: hidden; border-radius: 0 0 20px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
     #hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); z-index: 1; object-fit: cover; }
@@ -68,7 +68,23 @@
     .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #777; font-size: 11px; flex: 1; border: none; background: none; cursor: pointer; }
     .nav-item i { font-size: 20px; margin-bottom: 5px; color:#0a39d4 ; }
     .nav-item.active { color: #000000; font-weight: bold; }
-  </style>
+
+    /* --- NOVA INTEGRAÇÃO DE IMPRESSÃO --- */
+    @media print {
+      body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
+      header, .bottom-nav, button, .filtro-periodo, #avisoDeteccao, .assinatura, h3 { display: none !important; }
+      
+      .aba-content { display: none !important; }
+      #aba-pedidos { display: block !important; width: 100% !important; }
+      
+      .card { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: white !important; }
+      #resumoTotal { color: black !important; margin: 20px 0 !important; font-size: 20px !important; text-align: right !important; }
+      
+      table { width: 100% !important; border-collapse: collapse !important; margin-top: 10px !important; }
+      th { background: #f2f2f2 !important; color: black !important; border: 1px solid #000 !important; padding: 8px !important; font-size: 12px !important; }
+      td { border: 1px solid #000 !important; padding: 8px !important; color: black !important; font-size: 11px !important; }
+    }
+</style>
 </head>
 <body>
 
@@ -106,7 +122,17 @@
     </div>
 
     <div class="card">
-      <h3>Dados da Entrega</h3>
+  <h3>Dados da Entrega</h3>
+  
+  <div style="position: relative; margin-bottom: 15px;">
+    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 15px; color: #0a39d4;"></i>
+    <input type="text" id="filtroClientes" placeholder="🔍 Buscar cliente no histórico..." style="padding-left: 40px; margin-bottom: 5px; background: #f0f4f8;">
+    
+    <div id="listaSugestoes" style="display: none; position: absolute; width: 100%; background: white; border: 1px solid #ddd; border-radius: 10px; z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto;"></div>
+  </div>
+
+  <form id="pedidoForm" autocomplete="off">
+    <input type="text" id="nomeCliente" placeholder="Nome do cliente" required>
       <form id="pedidoForm" autocomplete="off">
         <input type="text" id="nomeCliente" placeholder="Nome do cliente" required>
         <textarea id="enderecoEntrega" placeholder="Endereço da entrega (Rua, nº e Condomínio)" required></textarea>
@@ -123,7 +149,7 @@
         <button type="submit" class="btn-verde">🚀 SOLICITAR ENTREGADOR</button>
       </form>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.6</div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.8</div>
   </div>
 
   <div id="aba-pedidos" class="aba-content">
@@ -465,6 +491,83 @@ rankingOrdenado.slice(0, 5).forEach((item, index) => {
       options: { plugins: { legend: { display: false } }, maintainAspectRatio: true, responsive: true }
     });
   }
+  // VARIÁVEL PARA GUARDAR OS CLIENTES DO HISTÓRICO
+let historicoClientes = [];
+
+// Captura os dados da planilha para alimentar a busca assim que o app abre
+async function carregarHistoricoParaFiltro() {
+  const id = localStorage.getItem('idLojaAmmeep');
+  try {
+    const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
+    const dados = await res.json();
+    
+    // Filtra para remover duplicados e salvar apenas Nome, Endereço e Bairro
+    const mapeado = dados.map(p => {
+      // Tenta extrair o bairro que está entre parênteses no endereço
+      let enderecoLimpo = p.endereco || "";
+      let bairroLimpo = "";
+      if (enderecoLimpo.includes('(')) {
+        const partes = enderecoLimpo.split('(');
+        enderecoLimpo = partes[0].trim();
+        bairroLimpo = partes[1].replace(')', '').trim();
+      }
+      return { cliente: p.cliente, endereco: enderecoLimpo, bairro: bairroLimpo };
+    });
+
+    // Remove nomes duplicados para a lista não ficar gigante
+    historicoClientes = mapeado.filter((v, i, a) => a.findIndex(t => t.cliente === v.cliente) === i);
+  } catch (e) { console.log("Erro ao carregar histórico para o filtro."); }
+}
+
+// Executa o carregamento do histórico em segundo plano
+carregarHistoricoParaFiltro();
+
+// Lógica da Lupa de Busca
+document.getElementById('filtroClientes').addEventListener('input', function() {
+  const busca = limparTexto(this.value);
+  const sugestoes = document.getElementById('listaSugestoes');
+  sugestoes.innerHTML = "";
+
+  if (busca.length < 2) {
+    sugestoes.style.display = "none";
+    return;
+  }
+
+  const filtrados = historicoClientes.filter(c => limparTexto(c.cliente).includes(busca));
+
+  if (filtrados.length > 0) {
+    sugestoes.style.display = "block";
+    filtrados.forEach(f => {
+      const item = document.createElement('div');
+      item.style.padding = "12px";
+      item.style.borderBottom = "1px solid #eee";
+      item.style.cursor = "pointer";
+      item.style.fontSize = "13px";
+      item.innerHTML = `<strong>${f.cliente}</strong><br><small style="color: #666;">${f.endereco} (${f.bairro})</small>`;
+      
+      // Ao clicar na sugestão, preenche o formulário original
+      item.onclick = function() {
+        document.getElementById('nomeCliente').value = f.cliente;
+        document.getElementById('enderecoEntrega').value = f.endereco;
+        document.getElementById('bairroDestino').value = f.bairro;
+        
+        document.getElementById('filtroClientes').value = ""; // Limpa a lupa
+        sugestoes.style.display = "none";
+        calcular(); // Recalcula a taxa automaticamente
+      };
+      sugestoes.appendChild(item);
+    });
+  } else {
+    sugestoes.style.display = "none";
+  }
+});
+
+// Fecha a lista se clicar fora dela
+document.addEventListener('click', function(e) {
+  if (e.target.id !== 'filtroClientes') {
+    document.getElementById('listaSugestoes').style.display = "none";
+  }
+});
 </script>
 </body>
 </html>
