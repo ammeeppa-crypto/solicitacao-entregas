@@ -153,12 +153,12 @@
 </button>
       </form>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026 | Asgama V.s2.6</div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V.s2.9</div>
   </div>
 
   <div id="aba-pedidos" class="aba-content">
     <div class="card">
-      <h3>Relatório de Entregas</h3>
+      <h3>Histórico de Entregas</h3>
       <div class="filtro-periodo">
         <div><label>INÍCIO</label><input type="date" id="dataInicio"></div>
         <div><label>FIM</label><input type="date" id="dataFim"></div>
@@ -172,7 +172,7 @@
       </table>
       <button onclick="window.print()" class="btn-cinza">🖨️ IMPRIMIR RELATÓRIO A4</button>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026</div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V.s2.9</div>
   </div>
 
   <div id="aba-financeiro" class="aba-content">
@@ -210,12 +210,12 @@
         </div>
       </div>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026</div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V.s2.9</div>
   </div>
 
   <nav class="bottom-nav">
     <button class="nav-item active" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-motorcycle"></i><span>Painel</span></button>
-    <button class="nav-item" onclick="trocarAba('aba-pedidos', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Relatório</span></button>
+    <button class="nav-item" onclick="trocarAba('aba-pedidos', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Histórico</span></button>
     <button class="nav-item" onclick="trocarAba('aba-financeiro', this)"><i class="fa-solid fa-chart-line"></i><span>Financeiro</span></button>
     <button class="nav-item" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-user-gear"></i><span>Perfil</span></button>
   </nav>
@@ -582,7 +582,7 @@ function iniciarTour() {
     doneBtnText: 'Finalizar',
     steps: [
       { element: 'header', popover: { title: 'Bem-vindo!', description: 'Este é o seu painel AMMEEP. Aqui você gerencia suas solicitações de entregas.', position: 'bottom' } },
-      { element: '#filtroClientes', popover: { title: 'Lupa de Busca', description: 'Digite o nome de um cliente já cadastrado  aqui para preencher o endereço automaticamente!', position: 'bottom' } },
+      { element: '#filtroClientes', popover: { title: 'Lupa de Busca', description: 'Digite o nome de um cliente já cadastrado  aqui para preencher o endereço automaticamente (puxe o Histórico para carregar)!', position: 'bottom' } },
       { element: '#pedidoForm', popover: { title: 'Novo Chamado', description: 'Preencha os dados e o sistema calcula a taxa na hora.', position: 'top' } },
       { element: '.btn-verde', popover: { title: 'WhatsApp', description: 'Clique aqui para enviar os dados para o grupo dos motoboy disponíveis.', position: 'top' } },
       { element: '.bottom-nav', popover: { title: 'Navegação', description: 'Mude entre o Painel, Relatórios e Financeiro por aqui.', position: 'top' } }
