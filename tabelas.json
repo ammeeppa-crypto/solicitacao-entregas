@@ -95,8 +95,8 @@
     "CONDOMINIO: PONTA PORÃ": 16.00,
     "CONDOMINIO: SOL NASCENTE": 16.00,
     "CONDOMINIO: SARAH MARTINS": 18.00,
-    "CONDOMINIO: SANTA LIDIA": 18.00,
-    "CONDOMINIO: RIO BRANCO": 15.00
+    "CONDOMINIO: SANTA LIDIA": 18.00
+    
   },
   "FONTE BOA": {
      "ANA JULIA": 9.00,
@@ -196,8 +196,8 @@
     "CONDOMINIO: PONTA PORÃ": 16.00,
     "CONDOMINIO: SOL NASCENTE": 16.00,
     "CONDOMINIO: SARAH MARTINS": 19.00,
-    "CONDOMINIO: SANTA LIDIA": 21.00,
-    "CONDOMINIO: RIO BRANCO": 14.00
+    "CONDOMINIO: SANTA LIDIA": 21.00
+    
   },
   "IANETAMA": {
      "ANA JULIA": 11.00,
@@ -299,8 +299,8 @@
     "CONDOMINIO: PONTA PORÃ": 12.00,
     "CONDOMINIO: SOL NASCENTE": 12.00,
     "CONDOMINIO: SARAH MARTINS": 22.00,
-    "CONDOMINIO: SANTA LIDIA": 18.00,
-    "CONDOMINIO: RIO BRANCO": 16.00
+    "CONDOMINIO: SANTA LIDIA": 18.00
+   
   },
   "MILAGRE": {
      "ANA JULIA": 12.00,
@@ -402,8 +402,8 @@
     "CONDOMINIO: PONTA PORÃ": 14.00,
     "CONDOMINIO: SOL NASCENTE": 14.00,
     "CONDOMINIO: SARAH MARTINS": 22.00,
-    "CONDOMINIO: SANTA LIDIA": 15.00,
-    "CONDOMINIO: RIO BRANCO": 15.00
+    "CONDOMINIO: SANTA LIDIA": 15.00
+    
   },
   "CENTRO": {
     "ANA JULIA": 10.00,
@@ -505,8 +505,8 @@
     "CONDOMINIO: PONTA PORÃ": 14.00,
     "CONDOMINIO: SOL NASCENTE": 14.00,
     "CONDOMINIO: SARAH MARTINS": 21.00,
-    "CONDOMINIO: SANTA LIDIA": 19.00,
-    "CONDOMINIO: RIO BRANCO": 14.00
+    "CONDOMINIO: SANTA LIDIA": 19.00
+    
   },
   "ESTRELA": {
     "ANA JULIA": 10.00,
@@ -609,8 +609,8 @@
     "CONDOMINIO: PONTA PORÃ": 14.00,
     "CONDOMINIO: SOL NASCENTE": 14.00,
     "CONDOMINIO: SARAH MARTINS": 21.00,
-    "CONDOMINIO: SANTA LIDIA": 19.00,
-    "CONDOMINIO: RIO BRANCO": 14.00
+    "CONDOMINIO: SANTA LIDIA": 19.00
+    
   },
   "NOVO OLINDA": {
     "ANA JULIA": 10.00,
@@ -713,8 +713,8 @@
     "CONDOMINIO: PONTA PORÃ": 16.00,
     "CONDOMINIO: SOL NASCENTE": 16.00,
     "CONDOMINIO: SARAH MARTINS": 18.00,
-    "CONDOMINIO: SANTA LIDIA": 15.00,
-    "CONDOMINIO: RIO BRANCO": 12.00
+    "CONDOMINIO: SANTA LIDIA": 15.00
+    
   },
 
   "TITANLANDIA": {
@@ -815,7 +815,6 @@
     "CONDOMINIO: Sol Nascente": 20.00,
     "CONDOMINIO: Sarah Martins": 15.00,
     "CONDOMINIO: Santa Lidia": 22.00,
-    "CONDOMINIO: Rio Branco": 16.00,
     "CONDOMINIO: hospital Regional": 17.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 18.00,
     "CONDOMINIO: Upa 24H": 10.00,
@@ -921,7 +920,6 @@
     "CONDOMINIO: Sol Nascente": 16.00,
     "CONDOMINIO: Sarah Martins": 17.00,
     "CONDOMINIO: Santa Lidia": 19.00,
-    "CONDOMINIO: Rio Branco": 13.00,
     "CONDOMINIO: hospital Regional": 14.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 16.00,
     "CONDOMINIO: Upa 24H": 14.00,
@@ -1028,7 +1026,6 @@
     "CONDOMINIO: Sol Nascente": 13.00,
     "CONDOMINIO: Sarah Martins": 22.00,
     "CONDOMINIO: Santa Lidia": 20.00,
-    "CONDOMINIO: Rio Branco": 15.00,
     "CONDOMINIO: hospital Regional": 15.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 17.00,
     "CONDOMINIO: UPA 24H": 11.00,
@@ -1133,7 +1130,6 @@
     "CONDOMINIO: Ponta Porã": 13.00,
     "CONDOMINIO: Sol Nascente": 15.00,
     "CONDOMINIO: Sarah Martins": 21.00,
-    "CONDOMINIO: Santa Lidia": 20.00,
     "CONDOMINIO: Rio Branco": 13.00,
     "CONDOMINIO: hospital Regional": 15.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 17.00,
@@ -1240,7 +1236,6 @@
     "CONDOMINIO: Sol Nascente": 16.00,
     "CONDOMINIO: Sarah Martins": 18.00,
     "CONDOMINIO: Santa Lidia": 15.00,
-    "CONDOMINIO: Rio Branco": 12.00,
     "CONDOMINIO: hospital Regional": 15.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 17.00,
     "CONDOMINIO: UPA": 8.00,
@@ -1347,7 +1342,6 @@
     "CONDOMINIO: Sol Nascente": 15.00,
     "CONDOMINIO: Sarah Martins": 23.00,
     "CONDOMINIO: Santa Lidia": 20.00,
-    "CONDOMINIO: Rio Branco": 16.00,
     "CONDOMINIO: hospital Regional": 16.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 18.00,
     "CONDOMINIO: UPA": 12.00,
@@ -1457,7 +1451,6 @@
     "CONDOMINIO: Sol Nascente": 15.00,
     "CONDOMINIO: Sarah Martins": 24.00,
     "CONDOMINIO: Santa Lidia": 20.00,
-    "CONDOMINIO: Rio Branco": 16.00,
     "CONDOMINIO: hospital Regional": 15.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 18.00,
     "CONDOMINIO: UPA": 12.00,
@@ -1564,7 +1557,6 @@
     "CONDOMINIO: Sol Nascente": 19.00,
     "CONDOMINIO: Sarah Martins": 12.00,
     "CONDOMINIO: Santa Lidia": 12.00,
-    "CONDOMINIO: Rio Branco": 20.00,
     "CONDOMINIO: hospital Regional": 7.00,
     "CONDOMINIO:HOTEL GRAN PARADA": 9.00,
     "CONDOMINIO: UPA": 14.00,
