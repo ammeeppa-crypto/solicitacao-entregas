@@ -144,13 +144,13 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
     const infoVolta = valorVolta > 0 ? `\n* ADICIONAL VOLTA:* R$ ${valorVolta.toFixed(2).replace('.', ',')}` : "";
     
     const msg = ` *SOLICITAÇÃO DE ENTREGA* \n\n` +
-                `* RETIRADA:* \n${localStorage.getItem('endereco')}\n\n` +
-                `* CLIENTE:* ${cliente}\n` +
-                `* ENDEREÇO:* ${endEntrega}\n` +
-                `* BAIRRO:* ${bairro}\n\n` +
+                `*RETIRADA:* \n${localStorage.getItem('endereco')}\n\n` +
+                `*CLIENTE:* ${cliente}\n` +
+                `*ENDEREÇO:* ${endEntrega}\n` +
+                `*BAIRRO:* ${bairro}\n\n` +
                 `------------------------------\n` +
                 `*ENTREGA:* R$ ${valorBase.toFixed(2).replace('.', ',')}${infoVolta}\n` +
-                `* TOTAL A PAGAR: R$ ${valorTotal.toFixed(2).replace('.', ',')}*\n` +
+                `*TOTAL A PAGAR: R$ ${valorTotal.toFixed(2).replace('.', ',')}*\n` +
                 `------------------------------\n\n` +
                 `_Gerado por AMMEEP v3.1_`;
 
