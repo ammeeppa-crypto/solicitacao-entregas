@@ -4,89 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#0f5dc2">
+  <meta name="theme-color" content="#1a1a2e">
   <title>AMMEEP - Sistema de Entrega 2026</title>
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
-<script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
- <style>
-    body { font-family: 'Segoe UI', sans-serif; padding: 15px; max-width: 500px; margin: auto; background: #010124; color: #333; padding-bottom: 100px; }
-    header { position: relative; height: 180px; overflow: hidden; border-radius: 0 0 20px 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-    #hero-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); z-index: 1; object-fit: cover; }
-    header img { width: 130px; position: relative; z-index: 2; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
-    header::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.2); z-index: 1; }
-    
-    .card { background: white; padding: 18px; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); margin-bottom: 20px; border-top: 6px solid #0f5dc2; }
-    .aba-content { display: none; }
-    .aba-content.active { display: block; animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    h3 { font-size: 16px; color: #0f5dc2; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; text-align: center; }
-    
-    input, textarea, select { width: 100%; margin-bottom: 12px; padding: 14px; font-size: 15px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; outline: none; transition: 0.3s; }
-    input:focus { border-color: #0f5dc2; }
-
-    #avisoDeteccao { font-size: 14px; padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none; text-align: center; font-weight: bold; }
-    .sucesso-detec { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-
-    button { 
-      width: 100%; padding: 15px; font-size: 16px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; color: white;
-      transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-    }
-    button:active { transform: scale(0.96); }
-    
-    .btn-azul { background: linear-gradient(135deg, #0f5dc2, #003a8c); }
-    .btn-verde { background: linear-gradient(135deg, #0cbd15, #088a0f); margin-top: 10px; }
-    .btn-cinza { background: linear-gradient(135deg, #666, #444); margin-top: 15px; }
-
-    /* AJUSTES FINOS FINANCEIRO */
-    .btn-financeiro-slim { padding: 10px !important; font-size: 14px !important; margin-top: 5px; }
-    .mini-card-slim { padding: 8px 5px !important; }
-    .mini-card-slim span { font-size: 9px !important; margin-bottom: 2px !important; }
-    .mini-card-slim b { font-size: 14px !important; }
-
-    .filtro-periodo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; background: #f0f4f8; padding: 12px; border-radius: 10px; border: 1px solid #bcd; }
-    .filtro-periodo label { font-size: 10px; font-weight: bold; color: #000000; display: block; margin-bottom: 4px; }
-    .filtro-periodo input { margin-bottom: 0; padding: 10px; border: 1px solid #cbd; }
-
-    table { width: 100%; border-collapse: collapse; font-size: 11px; background: white; }
-    th { background: #0a39d4; color: white; padding: 12px 5px; text-align: left; }
-    td { padding: 10px 5px; border-bottom: 1px solid #eee; }
-
-    .card-dark { 
-      background: #1a1a2e; color: white; border-radius: 15px; 
-      padding: 10px; margin-top: 15px; 
-    }
-
-    .grid-financeiro { display: flex; gap: 8px; margin-bottom: 12px; margin-top: 10px; }
-    .mini-card { flex: 1; border-radius: 10px; text-align: center; }
-    
-    #container-grafico { max-width: 130px; margin: 0 auto; }
-    
-    .assinatura { text-align: center; font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 20px; letter-spacing: 2px; }
-
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #ddd; z-index: 9999; }
-    .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #777; font-size: 11px; flex: 1; border: none; background: none; cursor: pointer; }
-    .nav-item i { font-size: 20px; margin-bottom: 5px; color:#0a39d4 ; }
-    .nav-item.active { color: #000000; font-weight: bold; }
-
-    /* --- NOVA INTEGRAÇÃO DE IMPRESSÃO --- */
-    @media print {
-      body { background: white !important; color: black !important; padding: 0 !important; margin: 0 !important; max-width: 100% !important; }
-      header, .bottom-nav, button, .filtro-periodo, #avisoDeteccao, .assinatura, h3 { display: none !important; }
-      
-      .aba-content { display: none !important; }
-      #aba-pedidos { display: block !important; width: 100% !important; }
-      
-      .card { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: white !important; }
-      #resumoTotal { color: black !important; margin: 20px 0 !important; font-size: 20px !important; text-align: right !important; }
-      
-      table { width: 100% !important; border-collapse: collapse !important; margin-top: 10px !important; }
-      th { background: #f2f2f2 !important; color: black !important; border: 1px solid #000 !important; padding: 8px !important; font-size: 12px !important; }
-      td { border: 1px solid #000 !important; padding: 8px !important; color: black !important; font-size: 11px !important; }
-    }
-</style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -97,82 +22,159 @@
     <img src="logo.png" alt="Logo">
   </header>
 
-  <div id="aba-painel" class="aba-content active">
-    <div class="card">
-      <h3>Nome da Loja e Endereço</h3>
-      <textarea id="enderecoRetirada" placeholder="Nome da Loja, Endereço e Bairro"></textarea>
-      <div id="avisoDeteccao">Aguardando endereço...</div>
-      <div id="exibeId" style="text-align:right; font-size:11px; margin-bottom:10px;">ID: <span id="valId">...</span></div>
-      
-      <select id="bairroOrigem" style="display:none;">
-        <option value="SAUDADE">SAUDADE</option>
-        <option value="CENTRO">CENTRO</option>
-        <option value="IANETAMA">IANETAMA</option>
-        <option value="FONTE BOA">FONTE BOA</option>
-        <option value="MILAGRE">MILAGRE</option>
-        <option value="ESTRELA">ESTRELA</option>
-        <option value="TITANLANDIA">TITANLANDIA</option>
-        <option value="CRISTO">CRISTO</option>
-        <option value="CAIÇARA">CAIÇARA</option>
-        <option value="NOVO ESTRELA">NOVO ESTRELA</option>
-        <option value="NOVA OLINDA">NOVA OLINDA</option>
-        <option value="NOVO CAIÇARA">NOVO CAIÇARA</option>
-        <option value="SÃO JOSÉ">SÃO JOSÉ</option>
-        <option value="JADERLANDIA">JADERLANDIA</option>
-      </select>
-      <button type="button" id="salvarConfig" class="btn-azul">SALVAR CONFIGURAÇÃO</button>
-    </div>
-
-    <div class="card">
-  <h3>Dados da Entrega</h3>
-  
-  <div style="position: relative; margin-bottom: 15px;">
-    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 15px; color: #0a39d4;"></i>
-    <input type="text" id="filtroClientes" placeholder="🔍 Buscar cliente no histórico..." style="padding-left: 40px; margin-bottom: 5px; background: #f0f4f8;">
+  <div id="aba-delivery" class="aba-content active" style="background: #111111; color: #ffffff; padding: 10px; border-radius: 15px;">
     
-    <div id="listaSugestoes" style="display: none; position: absolute; width: 100%; background: white; border: 1px solid #ddd; border-radius: 10px; z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto;"></div>
-  </div>
+    <div style="position: relative; margin-bottom: 15px;">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 15px; top: 15px; color: #ff0000;"></i>
+        <input type="text" id="filtroClientes" placeholder="🔍 Buscar cliente no histórico..." 
+               style="padding-left: 40px; margin-bottom: 5px; background: #ffffff !important; color: #000000 !important; border: 1px solid #ccc !important;">
+        <div id="listaSugestoes" style="display: none; position: absolute; width: 100%; background: #ffffff; border: 1px solid #000000; border-radius: 10px; z-index: 1000; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; color: #000000;"></div>
+    </div>
 
-  <form id="pedidoForm" autocomplete="off">
-    <input type="text" id="nomeCliente" placeholder="Nome do cliente" required>
-      <form id="pedidoForm" autocomplete="off">
-              <textarea id="enderecoEntrega" placeholder="Endereço da entrega (Rua, nº e Condomínio)" required></textarea>
-        <input type="text" id="bairroDestino" placeholder="Bairro de destino" required>
-        <select id="volta">
-          <option value="Não">Vai precisar de Volta? Não</option>
-          <option value="Sim">Vai precisar de Volta? Sim (+ R$ 4,00)</option>
-        </select>
-        <div id="resumoFinanceiro" style="background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #c20f0f; margin-bottom: 15px;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Taxa de Entrega:</span> <span id="res-base">R$ 0,00</span></div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Adicional Volta:</span> <span id="res-volta">R$ 0,00</span></div>
-          <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #c20f0f; border-top: 2px solid #0f5dc2; padding-top: 8px;"><span>TOTAL:</span> <span id="res-total">---</span></div>
+    <form id="pedidoForm" autocomplete="off">
+        <div class="card">
+            <h3>Nome do Cliente</h3>
+            <input type="text" id="nomeCliente" placeholder="Nome do cliente" required>
         </div>
-        <button type="submit" class="btn-verde">🚀 SOLICITAR ENTREGADOR</button>
-        <button onclick="iniciarTour()" style="width: auto; padding: 5px 15px; font-size: 12px; background: rgba(255,255,255,0.2); border: 1px solid white; margin-bottom: 10px;">
-                                                                ❓ Como usar o app?
-</button>
-      </form>
-    </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V.s2.9</div>
+
+        <div class="card">
+            <h3>Dados da Entrega</h3>
+            <textarea id="enderecoEntrega" placeholder="Endereço da entrega (Rua, nº e Condomínio)" required></textarea>
+            <input type="text" id="bairroDestino" placeholder="Bairro de destino" required>
+            
+            <select id="volta">
+                <option value="Não">Vai precisar de Volta? Não</option>
+                <option value="Sim">Vai precisar de Volta? Sim (+ R$ 4,00)</option>
+            </select>
+
+            <div id="resumoFinanceiro" style="background: #ffffff; padding: 15px; border-radius: 8px; border: 2px solid #ff0000; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #000000; font-weight: bold;">
+                    <span>Taxa de Entrega:</span> 
+                    <span id="res-base">R$ 0,00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: #000000;">
+                    <span>Adicional Volta:</span> 
+                    <span id="res-volta">R$ 0,00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; color: #ff0000; border-top: 1px solid #eee; padding-top: 8px;">
+                    <span>TOTAL:</span> 
+                    <span id="res-total">---</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-verde">
+                <i class="fa-brands fa-whatsapp"></i> SOLICITAR ENTREGADOR
+            </button>
+            <button type="button" onclick="resetarTudoDelivery()" class="btn-cinza" style="margin-top: 10px; background: #444;">
+                <i class="fa-solid fa-eraser"></i> LIMPAR CAMPOS
+            </button>
+        </div>
+    </form>
+    
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V3.1</div>
+</div> 
+
+
+
+  <div id="aba-historico" class="aba-content">
+  <div id="print-header" style="display:none; text-align:center; color:black; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:10px;">
+    <h2 id="print-loja-nome" style="margin:0; text-transform:uppercase;"></h2>
+    <p id="print-loja-end" style="margin:5px 0; font-size:14px;"></p>
+    <h3 style="margin:10px 0; color:black; border:none;">RELATÓRIO DE CLIENTES</h3>
+    <p id="print-data-emissao" style="font-size:12px;"></p>
   </div>
 
-  <div id="aba-pedidos" class="aba-content">
-    <div class="card">
-      <h3>Histórico de Entregas</h3>
-      <div class="filtro-periodo">
-        <div><label>INÍCIO</label><input type="date" id="dataInicio"></div>
-        <div><label>FIM</label><input type="date" id="dataFim"></div>
-      </div>
-      <button class="btn-azul" onclick="carregarDadosPlanilha()">🔍 FILTRAR PERÍODO</button>
-      
-      <div id="resumoTotal" style="text-align:center; font-weight:bold; color:#0f5dc2; margin:15px 0; font-size:22px;">R$ 0,00</div>
-      <table>
-        <thead><tr><th>Data</th><th>Cliente</th><th>Endereço</th><th>Tabela</th><th>Valor</th></tr></thead>
-        <tbody id="corpoTabela"><tr><td colspan="5" style="text-align:center;">Filtre para ver os dados.</td></tr></tbody>
-      </table>
-      <button onclick="window.print()" class="btn-cinza">🖨️ IMPRIMIR RELATÓRIO A4</button>
+  <div class="card">
+    <h3>Histórico de Entregas</h3>
+    <div class="filtro-periodo">
+      <div><label>INÍCIO</label><input type="date" id="dataInicio"></div>
+      <div><label>FIM</label><input type="date" id="dataFim"></div>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V.s2.9</div>
+    
+    <button class="btn-azul" onclick="carregarDadosPlanilha()">🔍 FILTRAR PERÍODO</button>
+    
+    <div id="resumoTotal" style="text-align:center; font-weight:bold; color:#0f5dc2; margin:15px 0; font-size:22px;">R$ 0,00</div>
+    
+    <div class="tabela-container-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%">Data</th>
+            <th style="width:28%">Cliente</th>
+            <th style="width:35%">Endereço</th>
+            <th style="width:15%">Valor</th>
+          </tr>
+        </thead>
+        <tbody id="corpoTabela">
+          <tr><td colspan="4" style="text-align:center; padding:20px;">Filtre para ver os dados.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 15px;">
+      <button onclick="prepararImpressao()" class="btn-cinza" style="flex: 1;">🖨️ IMPRIMIR</button>
+      <button onclick="limparRelatorio()" class="btn-cinza" style="flex: 1; background: #8b0000;">🧹 LIMPAR</button>
+    </div>
+  </div>
+  <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V3.1</div>
+</div>
+
+  <div id="aba-perfil" class="aba-content">
+    
+    <div class="card" style="border-top-color: #ffc107;">
+      <h3>Resgatar Conta</h3>
+      <p style="font-size: 11px; color: #666; margin-bottom: 10px;">Perdeu seu acesso? Insira o ID fornecido pelo suporte AMMEEP:</p>
+      <div style="display: flex; gap: 5px; align-items: center;">
+        <input type="text" id="inputResgateID" placeholder="Ex: SAU-1234" style="margin-bottom: 0; flex: 1; text-transform: uppercase;">
+        <button type="button" onclick="vincularIDManual()" class="btn-azul" style="width: 80px; padding: 0; height: 45px;">
+          OK
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Dados da Minha Loja</h3>
+      
+      <p id="avisoTravaPerfil" style="display:none; font-size: 11px; color: #148a05; background: #84d8ff; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; border: 1px solid #ffcdd2;">
+        Dados travados para segurança. Para alterar, limpe os dados do navegador.
+      </p>
+
+      <label style="font-size: 11px; font-weight: bold; color: #333;">NOME DA LOJA E ENDEREÇO:</label>
+      <textarea id="perf-endereco" placeholder="Nome da Loja, Rua, Nº e Bairro" required style="margin-top: 5px; height: 80px;"></textarea>
+      
+      <label style="font-size: 11px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 5px;">
+        <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 14px;"></i> 
+        WHATSAPP DA LOJA (Obrigatório):
+      </label>
+      <input type="tel" id="perf-telefone" placeholder="(91) 9XXXX-XXXX" required style="margin-top: 5px;">
+
+      <label style="font-size: 11px; font-weight: bold; color: #333;">TABELA DE ORIGEM:</label>
+      <select id="perf-bairroOrigem" style="margin-top: 5px; height: 45px; width: 100%; border-radius: 10px; border: 1px solid #ddd; padding: 0 10px;">
+         <option value="SAUDADE">SAUDADE</option>
+         <option value="CENTRO">CENTRO</option>
+         <option value="IANETAMA">IANETAMA</option>
+         <option value="FONTE BOA">FONTE BOA</option>
+         <option value="MILAGRE">MILAGRE</option>
+         <option value="ESTRELA">ESTRELA</option>
+         <option value="TITANLANDIA">TITANLANDIA</option>
+         <option value="CRISTO">CRISTO</option>
+         <option value="CAIÇARA">CAIÇARA</option>
+         <option value="NOVO ESTRELA">NOVO ESTRELA</option>
+         <option value="NOVA OLINDA">NOVA OLINDA</option>
+         <option value="NOVO CAIÇARA">NOVO CAIÇARA</option>
+         <option value="SÃO JOSÉ">SÃO JOSÉ</option>
+         <option value="JADERLANDIA">JADERLANDIA</option>
+
+      </select>
+
+      <button type="button" id="btnSalvarPerfil" onclick="salvarCadastroCompleto()" class="btn-verde" style="margin-top: 15px;">
+        <i class="fa-solid fa-floppy-disk"></i> SALVAR E ATIVAR
+      </button>
+      
+      <div id="statusPerfil" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
+    </div>
+
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V3.1</div>
   </div>
 
   <div id="aba-financeiro" class="aba-content">
@@ -182,18 +184,18 @@
         <div><label>INÍCIO</label><input type="date" id="dataInicioF" style="font-size: 12px; padding: 8px;"></div>
         <div><label>FIM</label><input type="date" id="dataFimF" style="font-size: 12px; padding: 8px;"></div>
       </div>
-      <button class="btn-azul btn-financeiro-slim" onclick="processarFinanceiro()">🔍 ANALISAR DADOS</button>
+      <button class="btn-azul btn-financeiro-slim" onclick="processarFinanceiro()">🔍 ANALISAR DADOS</button><br>
 
-      <div class="grid-financeiro">
-        <div class="mini-card mini-card-slim" style="background: #2e7d32; color: white;">
-          <span>TAXAS</span>
-          <b id="fin-total-taxas">R$ 0,00</b>
-        </div>
-        <div class="mini-card mini-card-slim" style="background: #000205; color: white;">
-          <span>ENTREGAS</span>
-          <b id="fin-total-entregas">0</b>
-        </div>
-      </div>
+     <div class="container-resumo-financeiro">
+    <div class="resumo-item bg-verde">
+        <span>TAXAS</span>
+        <b id="fin-total-taxas">R$ 0,00</b>
+    </div>
+    <div class="resumo-item bg-preto">
+        <span>ENTREGAS</span>
+        <b id="fin-total-entregas">0</b>
+    </div>
+</div>
 
       <div class="card-dark">
         <div id="insightFinanceiro" style="margin-top:10px; font-size:11px; font-weight:bold; color:#0f5dc2; text-align:center;"></div>
@@ -210,393 +212,20 @@
         </div>
       </div>
     </div>
-    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V.s2.9</div>
+    <div class="assinatura">AMMEEP DELIVERY - 2026 | ®Asgama V.s3.1</div>
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-item active" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-motorcycle"></i><span>Painel</span></button>
-    <button class="nav-item" onclick="trocarAba('aba-pedidos', this)"><i class="fa-solid fa-file-invoice-dollar"></i><span>Histórico</span></button>
+    <button class="nav-item active" onclick="trocarAba('aba-delivery', this)"><i class="fa-solid fa-motorcycle"></i><span>Delivery</span></button>
+    <button class="nav-item" onclick="trocarAba('aba-historico', this)"><i class="fa-solid fa-magnifying-glass"></i><span>Relatório</span></button>
     <button class="nav-item" onclick="trocarAba('aba-financeiro', this)"><i class="fa-solid fa-chart-line"></i><span>Financeiro</span></button>
-    <button class="nav-item" onclick="trocarAba('aba-painel', this)"><i class="fa-solid fa-user-gear"></i><span>Perfil</span></button>
+    <button class="nav-item" onclick="trocarAba('aba-perfil', this)"><i class="fa-solid fa-user-gear"></i><span>Perfil</span></button>
   </nav>
 
-<script>
-  let dadosTabelas = {};
-  let chartFinanceiro = null;
-  const ADICIONAL_VOLTA = 4.00;
-  const URL_PLANILHA = "https://script.google.com/macros/s/AKfycbymExcxsqZ-gSMESEzDc8dMcLtQBpZVR6qYjGB5zZQqSgnAYFQLDyhrZ-5Nl1mS5lRY3Q/exec";
-
-  fetch('./tabelas.json').then(res => res.json()).then(data => { 
-      dadosTabelas = data; carregarConfiguracao(); 
-      const hoje = new Date().toISOString().split('T')[0];
-      document.getElementById('dataInicio').value = hoje;
-      document.getElementById('dataFim').value = hoje;
-      document.getElementById('dataInicioF').value = hoje;
-      document.getElementById('dataFimF').value = hoje;
-  });
-
-  function trocarAba(id, btn) {
-    document.querySelectorAll('.aba-content').forEach(a => a.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-  }
-
-  function limparTexto(t) { return t ? t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().trim() : ""; }
-
-  function calcular() {
-    const origem = document.getElementById('bairroOrigem').value;
-    const destinoDigitado = limparTexto(document.getElementById('bairroDestino').value);
-    const enderecoEntrega = limparTexto(document.getElementById('enderecoEntrega').value);
-    const querVolta = document.getElementById('volta').value === "Sim";
-    let taxaBase = 0, sucesso = false;
-
-    if (origem && dadosTabelas[origem]) {
-      const destinos = dadosTabelas[origem];
-      const condoKey = Object.keys(destinos).find(c => c.startsWith("CONDOMINIO:") && enderecoEntrega.includes(limparTexto(c.replace("CONDOMINIO:", ""))));
-      
-      if (condoKey) { 
-        taxaBase = destinos[condoKey]; sucesso = true; 
-      } else {
-        const bairroKey = Object.keys(destinos).find(b => limparTexto(b) === destinoDigitado);
-        if (bairroKey) { taxaBase = destinos[bairroKey]; sucesso = true; }
-      }
-    }
-    const valorVolta = querVolta ? ADICIONAL_VOLTA : 0;
-    const total = taxaBase + valorVolta;
-    document.getElementById('res-base').innerText = `R$ ${taxaBase.toFixed(2).replace('.', ',')}`;
-    document.getElementById('res-volta').innerText = `R$ ${valorVolta.toFixed(2).replace('.', ',')}`;
-    document.getElementById('res-total').innerText = sucesso ? `R$ ${total.toFixed(2).replace('.', ',')}` : "---";
-    return { taxaBase, valorVolta, total, sucesso, tabela: origem };
-  }
-
-  document.getElementById('bairroDestino').addEventListener('input', calcular);
-  document.getElementById('enderecoEntrega').addEventListener('input', calcular);
-  document.getElementById('volta').addEventListener('change', calcular);
-
-  document.getElementById('enderecoRetirada').addEventListener('input', function() {
-    const seletor = document.getElementById('bairroOrigem');
-    const aviso = document.getElementById('avisoDeteccao');
-    const textoDigitado = limparTexto(this.value);
-    const bairros = Object.keys(dadosTabelas);
-    let encontrado = bairros.sort((a,b) => b.length - a.length).find(b => {
-       return new RegExp("\\b" + limparTexto(b) + "\\b", "i").test(textoDigitado);
-    });
-    if (encontrado) {
-      seletor.value = encontrado;
-      aviso.className = "sucesso-detec"; aviso.style.display = "block";
-      aviso.innerHTML = `✅ Tabela ${encontrado} Ativada`;
-      let idLoja = localStorage.getItem('idLojaAmmeep');
-      if(!idLoja) {
-         idLoja = encontrado.substring(0,3).toUpperCase() + "-" + Math.floor(1000+Math.random()*9000);
-         localStorage.setItem('idLojaAmmeep', idLoja);
-      }
-      document.getElementById('valId').innerText = idLoja;
-      calcular();
-    }
-  });
-
-  document.getElementById('salvarConfig').onclick = () => {
-    localStorage.setItem('origem', document.getElementById('bairroOrigem').value);
-    localStorage.setItem('endereco', document.getElementById('enderecoRetirada').value);
-    alert("Configurações salvas!");
-  };
-
-  function carregarConfiguracao() {
-    const o = localStorage.getItem('origem'), e = localStorage.getItem('endereco');
-    if(o) { 
-      document.getElementById('bairroOrigem').value = o; 
-      document.getElementById('avisoDeteccao').style.display = "block";
-      document.getElementById('avisoDeteccao').className = "sucesso-detec";
-      document.getElementById('avisoDeteccao').innerHTML = `✅ Tabela ${o} Ativada`;
-      document.getElementById('valId').innerText = localStorage.getItem('idLojaAmmeep') || "...";
-    }
-    if(e) document.getElementById('enderecoRetirada').value = e;
-  }
-
-  document.getElementById('pedidoForm').onsubmit = function(e) {
-    e.preventDefault();
-    if (!confirm("📢 AVISO AMMEEP: Entrega até PORTARIA. Não subimos.")) return;
-    const calc = calcular();
-    if(!calc.sucesso) return alert("Erro no cálculo da taxa.");
-    
-    const cliente = document.getElementById('nomeCliente').value;
-    const endEntrega = document.getElementById('enderecoEntrega').value;
-    const bairro = document.getElementById('bairroDestino').value;
-    const lojaEnd = document.getElementById('enderecoRetirada').value;
-
-    fetch(URL_PLANILHA, { 
-      method: 'POST', mode: 'no-cors', 
-      body: JSON.stringify({ 
-        ID_LOJA: localStorage.getItem('idLojaAmmeep'), 
-        NOME_ESTABELECIMENTO: lojaEnd, 
-        CLIENTE: cliente, 
-        ENDERECO_COMPLETO: endEntrega + " (" + bairro + ")",
-        TABELA_ORIGEM: calc.tabela,
-        TAXA_MOTOBOY: calc.total
-      }) 
-    });
-
-    const msg = `*Solicitação Padrão de Entrega*\n\n` +
-                `*RETIRADA:*\n${lojaEnd}\n\n` +
-                `( Tabela: ${calc.tabela})\n\n` +
-                `*CLIENTE:* ${cliente}\n` +
-                `*ENDEREÇO:* ${endEntrega}\n` +
-                `*BAIRRO:* ${bairro}\n\n` +
-                `*VALORES:*\n` +
-                `Entrega: R$ ${calc.taxaBase.toFixed(2).replace('.', ',')}\n` +
-                `Volta: R$ ${calc.valorVolta.toFixed(2).replace('.', ',')}\n` +
-                `*TOTAL: R$ ${calc.total.toFixed(2).replace('.', ',')}*\n\n` +
-                `AMMEEP –Pará \n\n` ;
-                
-
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-    this.reset();
-  };
-
-  async function carregarDadosPlanilha() {
-    const id = localStorage.getItem('idLojaAmmeep'), inicio = document.getElementById('dataInicio').value, fim = document.getElementById('dataFim').value;
-    const corpo = document.getElementById('corpoTabela');
-    corpo.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Sincronizando...</td></tr>";
-    try {
-      const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
-      const dados = await res.json();
-      corpo.innerHTML = ""; let soma = 0;
-      dados.reverse().forEach(p => {
-        const dataP = p.data.split('T')[0];
-        if (dataP >= inicio && dataP <= fim) {
-          const valorTaxa = parseFloat(p.taxa || 0);
-          soma += valorTaxa;
-          corpo.innerHTML += `<tr>
-            <td>${new Date(p.data).toLocaleDateString('pt-BR')}</td>
-            <td>${p.cliente}</td>
-            <td>${p.endereco || '---'}</td>
-            <td>${p.tabela || '---'}</td>
-            <td>R$ ${valorTaxa.toFixed(2).replace('.', ',')}</td>
-          </tr>`;
-        }
-      });
-      document.getElementById('resumoTotal').innerText = `R$ ${soma.toFixed(2).replace('.', ',')}`;
-      if (corpo.innerHTML === "") corpo.innerHTML = "<tr><td colspan='5' style='text-align:center;'>Vazio.</td></tr>";
-    } catch (e) { corpo.innerHTML = "<tr><td colspan='5'>Erro na conexão.</td></tr>"; }
-  }
-
- async function processarFinanceiro() {
-  const id = localStorage.getItem('idLojaAmmeep');
-  const inicio = document.getElementById('dataInicioF').value;
-  const fim = document.getElementById('dataFimF').value;
-  const listaRanking = document.getElementById('listaRanking');
-  listaRanking.innerHTML = "<tr><td>Processando...</td></tr>";
-
-  try {
-    const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
-    const dados = await res.json();
-
-    let totalGeral = 0, totalEntregas = 0;
-    let bairrosData = {}, bairrosQtd = {};
-
-    dados.forEach(p => {
-      const dataP = p.data.split('T')[0];
-
-      if (dataP >= inicio && dataP <= fim) {
-        const valor = parseFloat(p.taxa || 0);
-
-        const bairro = (p.endereco && p.endereco.includes('('))
-          ? p.endereco.split('(')[1].replace(')', '').trim().toUpperCase()
-          : "DIVERSOS";
-
-        totalGeral += valor;
-        totalEntregas++;
-
-        bairrosData[bairro] = (bairrosData[bairro] || 0) + valor;
-        bairrosQtd[bairro] = (bairrosQtd[bairro] || 0) + 1;
-      }
-    });
-
-    document.getElementById('fin-total-taxas').innerText =
-      `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
-
-    document.getElementById('fin-total-entregas').innerText =
-      totalEntregas;
-
-    const rankingOrdenado = Object.entries(bairrosData)
-      .sort((a, b) => b[1] - a[1]);
-
-    listaRanking.innerHTML = "";
-
-    const emojis = ["🥇", "🥈", "🥉", "🏅", "🏅"];
-
-    const cores = ['#0f5dc2', '#0cbd15', '#ffc107', '#e91e63', '#9c27b0'];
-
-rankingOrdenado.slice(0, 5).forEach((item, index) => {
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
   
-  let icone = "";
+  <script src="script.js"></script>
 
-  if (index === 0) icone = "🥇";
-  else if (index === 1) icone = "🥈";
-  else if (index === 2) icone = "🥉";
-  else {
-    // bolinha com cor do gráfico
-    icone = `<span style="
-      display:inline-block;
-      width:8px;
-      height:8px;
-      border-radius:50%;
-      background:${cores[index]};
-      margin-right:4px;
-    "></span>`;
-  }
-
-  listaRanking.innerHTML += `
-    <tr>
-      <td style="padding: 4px 0;">
-        ${icone} ${item[0]}
-      </td>
-      <td style="text-align:right;">
-        R$ ${item[1].toFixed(2)}
-      </td>
-    </tr>
-  `;
-});
-
-    // 🧠 Insight inteligente
-    if (rankingOrdenado.length > 0) {
-      const top = rankingOrdenado[0];
-      const bairroTop = top[0];
-      const valorTop = top[1];
-      const qtdTop = bairrosQtd[bairroTop] || 0;
-
-      document.getElementById("insightFinanceiro").innerText =
-        `🏆 Bairro mais forte: ${bairroTop} (R$ ${valorTop.toFixed(2)} em ${qtdTop} entregas)`;
-    }
-
-    gerarGraficoFinanceiro(rankingOrdenado);
-
-  } catch (e) {
-    listaRanking.innerHTML = "<tr><td>Erro ao carregar.</td></tr>";
-  }
-}
-
-  function gerarGraficoFinanceiro(dados) {
-    const ctx = document.getElementById('graficoBairros').getContext('2d');
-    const labels = dados.slice(0, 5).map(i => i[0]);
-    const valores = dados.slice(0, 5).map(i => i[1]);
-    if (chartFinanceiro) chartFinanceiro.destroy();
-    chartFinanceiro = new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: labels,
-        datasets: [{
-          data: valores,
-          backgroundColor: ['#0f5dc2', '#0cbd15', '#ffc107', '#e91e63', '#9c27b0'],
-          borderWidth: 1, borderColor: '#1a1a2e'
-        }]
-      },
-      options: { plugins: { legend: { display: false } }, maintainAspectRatio: true, responsive: true }
-    });
-  }
-  // VARIÁVEL PARA GUARDAR OS CLIENTES DO HISTÓRICO
-let historicoClientes = [];
-
-// Captura os dados da planilha para alimentar a busca assim que o app abre
-async function carregarHistoricoParaFiltro() {
-  const id = localStorage.getItem('idLojaAmmeep');
-  try {
-    const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
-    const dados = await res.json();
-    
-    // Filtra para remover duplicados e salvar apenas Nome, Endereço e Bairro
-    const mapeado = dados.map(p => {
-      // Tenta extrair o bairro que está entre parênteses no endereço
-      let enderecoLimpo = p.endereco || "";
-      let bairroLimpo = "";
-      if (enderecoLimpo.includes('(')) {
-        const partes = enderecoLimpo.split('(');
-        enderecoLimpo = partes[0].trim();
-        bairroLimpo = partes[1].replace(')', '').trim();
-      }
-      return { cliente: p.cliente, endereco: enderecoLimpo, bairro: bairroLimpo };
-    });
-
-    // Remove nomes duplicados para a lista não ficar gigante
-    historicoClientes = mapeado.filter((v, i, a) => a.findIndex(t => t.cliente === v.cliente) === i);
-  } catch (e) { console.log("Erro ao carregar histórico para o filtro."); }
-}
-
-// Executa o carregamento do histórico em segundo plano
-carregarHistoricoParaFiltro();
-
-// Lógica da Lupa de Busca
-document.getElementById('filtroClientes').addEventListener('input', function() {
-  const busca = limparTexto(this.value);
-  const sugestoes = document.getElementById('listaSugestoes');
-  sugestoes.innerHTML = "";
-
-  if (busca.length < 2) {
-    sugestoes.style.display = "none";
-    return;
-  }
-
-  const filtrados = historicoClientes.filter(c => limparTexto(c.cliente).includes(busca));
-
-  if (filtrados.length > 0) {
-    sugestoes.style.display = "block";
-    filtrados.forEach(f => {
-      const item = document.createElement('div');
-      item.style.padding = "12px";
-      item.style.borderBottom = "1px solid #eee";
-      item.style.cursor = "pointer";
-      item.style.fontSize = "13px";
-      item.innerHTML = `<strong>${f.cliente}</strong><br><small style="color: #666;">${f.endereco} (${f.bairro})</small>`;
-      
-      // Ao clicar na sugestão, preenche o formulário original
-      item.onclick = function() {
-        document.getElementById('nomeCliente').value = f.cliente;
-        document.getElementById('enderecoEntrega').value = f.endereco;
-        document.getElementById('bairroDestino').value = f.bairro;
-        
-        document.getElementById('filtroClientes').value = ""; // Limpa a lupa
-        sugestoes.style.display = "none";
-        calcular(); // Recalcula a taxa automaticamente
-      };
-      sugestoes.appendChild(item);
-    });
-  } else {
-    sugestoes.style.display = "none";
-  }
-});
-
-// Fecha a lista se clicar fora dela
-document.addEventListener('click', function(e) {
-  if (e.target.id !== 'filtroClientes') {
-    document.getElementById('listaSugestoes').style.display = "none";
-  }
-});
-function iniciarTour() {
-  const driver = window.driver.js.driver;
-
-  const d = driver({
-    showProgress: true,
-    nextBtnText: 'Próximo',
-    prevBtnText: 'Anterior',
-    doneBtnText: 'Finalizar',
-    steps: [
-      { element: 'header', popover: { title: 'Bem-vindo!', description: 'Este é o seu painel AMMEEP. Aqui você gerencia suas solicitações de entregas.', position: 'bottom' } },
-      { element: '#filtroClientes', popover: { title: 'Lupa de Busca', description: 'Digite o nome de um cliente já cadastrado  aqui para preencher o endereço automaticamente (puxe o Histórico para carregar)!', position: 'bottom' } },
-      { element: '#pedidoForm', popover: { title: 'Novo Chamado', description: 'Preencha os dados e o sistema calcula a taxa na hora.', position: 'top' } },
-      { element: '.btn-verde', popover: { title: 'WhatsApp', description: 'Clique aqui para enviar os dados para o grupo dos motoboy disponíveis.', position: 'top' } },
-      { element: '.bottom-nav', popover: { title: 'Navegação', description: 'Mude entre o Painel, Relatórios e Financeiro por aqui.', position: 'top' } }
-    ]
-  });
-
-  d.drive();
-}
-
-// Opcional: Iniciar automaticamente na primeira vez que o lojista abrir
-if (!localStorage.getItem('tourFeito')) {
-  setTimeout(iniciarTour, 2000); // Espera 2 segundos para carregar o vídeo
-  localStorage.setItem('tourFeito', 'true');
-}
-</script>
 </body>
 </html>
