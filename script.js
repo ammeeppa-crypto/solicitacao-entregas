@@ -104,19 +104,29 @@ document.getElementById('volta').addEventListener('change', calcular);
 
 document.getElementById('pedidoForm').onsubmit = function(e) {
     e.preventDefault();
+
     if (!localStorage.getItem('endereco') || !localStorage.getItem('telefoneLoja')) {
         alert("⚠️ CADASTRO OBRIGATÓRIO!");
         return;
     }
+
     if (!confirm("📢 AVISO AMMEEP: Entrega até PORTARIA.")) return;
 
-    const calc = calcular();
-    if (!calc.sucesso) return alert("Erro no cálculo.");
-    
+    // --- CAPTURA SEGURA DOS VALORES DA TELA ---
+    const extrairValor = (id) => {
+        const texto = document.getElementById(id).innerText;
+        return parseFloat(texto.replace('R$ ', '').replace(',', '.')) || 0;
+    };
+
+    const valorBase = extrairValor('res-base');
+    const valorVolta = extrairValor('res-volta');
+    const valorTotal = valorBase + valorVolta;
+
     const cliente = document.getElementById('nomeCliente').value;
     const endEntrega = document.getElementById('enderecoEntrega').value;
     const bairro = document.getElementById('bairroDestino').value;
 
+    // Envio para a Planilha
     fetch(URL_PLANILHA, { 
         method: 'POST', mode: 'no-cors', 
         body: JSON.stringify({ 
@@ -126,14 +136,32 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
             WHATSAPP_ESTABELECIMENTO: localStorage.getItem('telefoneLoja'),
             CLIENTE: cliente, 
             ENDERECO_COMPLETO: endEntrega + " (" + bairro + ")",
-            TABELA_ORIGEM: calc.tabela,
-            TAXA_MOTOBOY: calc.total
+            TAXA_MOTOBOY: valorTotal
         }) 
     });
 
-    const msg = `*Solicitação Padrão de Entrega*\n\n*RETIRADA:*\n${localStorage.getItem('endereco')}\n\n*CLIENTE:* ${cliente}\n*ENDEREÇO:* ${endEntrega}\n*BAIRRO:* ${bairro}\n\n*TOTAL: R$ ${calc.total.toFixed(2).replace('.', ',')}*`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    // --- MONTAGEM DA MENSAGEM DINÂMICA ---
+    const infoVolta = valorVolta > 0 ? `\n* ADICIONAL VOLTA:* R$ ${valorVolta.toFixed(2).replace('.', ',')}` : "";
+    
+    const msg = ` *SOLICITAÇÃO DE ENTREGA* \n\n` +
+                `* RETIRADA:* \n${localStorage.getItem('endereco')}\n\n` +
+                `* CLIENTE:* ${cliente}\n` +
+                `* ENDEREÇO:* ${endEntrega}\n` +
+                `* BAIRRO:* ${bairro}\n\n` +
+                `------------------------------\n` +
+                `*ENTREGA:* R$ ${valorBase.toFixed(2).replace('.', ',')}${infoVolta}\n` +
+                `* TOTAL A PAGAR: R$ ${valorTotal.toFixed(2).replace('.', ',')}*\n` +
+                `------------------------------\n\n` +
+                `_Gerado por AMMEEP v3.1_`;
+
+    // --- ABRIR WHATSAPP (MÉTODO MAIS COMPATÍVEL) ---
+    const urlWa = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+    window.location.href = urlWa;
+
+    // Reset da interface
     this.reset(); 
+    document.getElementById('res-base').innerText = "R$ 0,00";
+    document.getElementById('res-volta').innerText = "R$ 0,00";
     document.getElementById('res-total').innerText = "---";
 };
 
