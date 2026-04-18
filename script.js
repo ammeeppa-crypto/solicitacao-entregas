@@ -176,7 +176,7 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
                 `*ENTREGA:* R$ ${valorBase.toFixed(2).replace('.', ',')}${infoVolta}\n` +
                 `*TOTAL A PAGAR: R$ ${valorTotal.toFixed(2).replace('.', ',')}*\n` +
                 `------------------------------\n\n` +
-                `_Gerado por AMMEEP v3.1_`;
+                `_Gerado por AMMEEP v3.1.1_`;
 
     const urlWa = `https://wa.me/?text=${encodeURIComponent(msg)}`;
     window.location.href = urlWa;
