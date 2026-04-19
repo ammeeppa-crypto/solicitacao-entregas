@@ -373,3 +373,32 @@ td {
     margin-top: 10px;
     border: 1px solid #ddd;
 }
+
+/* ========================================== */
+/* ESTILO DO AVISO FLUTUANTE (TOAST) */
+/* ========================================== */
+.toast-ammeep {
+    position: fixed;
+    bottom: 80px; /* Fica acima da barra de navegação */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #0cbd15; /* Verde AMMEEP */
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #333;
+    opacity: 0;
+    transition: opacity 0.4s ease, bottom 0.4s ease;
+}
+
+.toast-ammeep.show {
+    opacity: 1;
+    bottom: 100px;
+}
