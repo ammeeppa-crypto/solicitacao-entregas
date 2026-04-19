@@ -10,33 +10,54 @@ const ADICIONAL_VOLTA = 4.00;
 const URL_PLANILHA = "https://script.google.com/macros/s/AKfycby0k4teozsiMEMyWf3IyKh-nCzNPfuRD9BcrTeKF4ew1YBU0sfNxJeOhgMrkYbMc8yv5Q/exec";
 
 /* ========================================== */
+/* FUNÇÃO DE AVISO PERSONALIZADO (TOAST) */
+/* ========================================== */
+function mostrarAviso(mensagem) {
+    // Remove aviso anterior se existir
+    const antigo = document.querySelector('.toast-ammeep');
+    if (antigo) antigo.remove();
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-ammeep';
+    toast.innerHTML = `<span>✅</span> ${mensagem}`;
+    document.body.appendChild(toast);
+
+    // Pequeno delay para disparar a animação de subida
+    setTimeout(() => toast.classList.add('show'), 100);
+
+    // Remove após 3 segundos
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+}
+
+/* ========================================== */
 /* INICIALIZAÇÃO DO APP */
 /* ========================================== */
 window.addEventListener('load', () => {
-    // Carrega o tabelas.json
     fetch('tabelas.json').then(res => res.json()).then(data => { 
         dadosTabelas = data;
         
-        // Define data de hoje nos inputs
         const hoje = new Date().toISOString().split('T')[0];
         ['dataInicio', 'dataFim', 'dataInicioF', 'dataFimF'].forEach(id => {
             const input = document.getElementById(id);
             if (input) input.value = hoje;
         });
         
-        // 1. Carrega os dados salvos nos campos (Perfil e Pedido)
         recarregarDadosInterface();
-        
-        // 2. Trava removida para permitir edição livre ao iniciar
-        // verificarTravaPerfil(); 
-        
-        // 3. Carrega o histórico para a lupa
         carregarHistoricoParaFiltro();
+
+        // Alerta inicial de tabela ativa
+        const tabAtiva = localStorage.getItem('origem');
+        if(tabAtiva) {
+            setTimeout(() => mostrarAviso(`Tabela ${tabAtiva} Ativada`), 800);
+        }
     })
-    .catch(err => {
-        console.error("Erro ao carregar tabelas.json:", err);
-    });
+    .catch(err => console.error("Erro ao carregar tabelas.json:", err));
 });
+
+// ... (Funções carregarHistoricoParaFiltro, trocarAba e limparTexto permanecem iguais)
 
 async function carregarHistoricoParaFiltro() {
     const id = localStorage.getItem('idLojaAmmeep');
@@ -58,9 +79,6 @@ async function carregarHistoricoParaFiltro() {
     } catch (e) { console.log("Erro ao carregar histórico."); }
 }
 
-/* ========================================== */
-/* FUNÇÕES GERAIS E ATUALIZAÇÃO VISUAL */
-/* ========================================== */
 function trocarAba(idAba, botaoMenu) {
     document.querySelectorAll('.aba-content').forEach(aba => aba.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
@@ -176,7 +194,7 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
                 `*ENTREGA:* R$ ${valorBase.toFixed(2).replace('.', ',')}${infoVolta}\n` +
                 `*TOTAL A PAGAR: R$ ${valorTotal.toFixed(2).replace('.', ',')}*\n` +
                 `------------------------------\n\n` +
-                `_Sistema de Solicitação AMMEEP v3_`;
+                `_AMMEEP v3.1.2_`;
 
     const urlWa = `https://wa.me/?text=${encodeURIComponent(msg)}`;
     window.location.href = urlWa;
@@ -186,6 +204,8 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
     document.getElementById('res-volta').innerText = "R$ 0,00";
     document.getElementById('res-total').innerText = "---";
 };
+
+// ... (Funções de Relatório e Financeiro permanecem iguais)
 
 function resetarTudoDelivery() {
     if (confirm("Deseja limpar todos os campos deste pedido?")) {
@@ -203,9 +223,6 @@ function resetarTudoDelivery() {
     }
 }
 
-/* ========================================== */
-/* LUPA DE BUSCA */
-/* ========================================== */
 document.getElementById('filtroClientes').addEventListener('input', function() {
     const busca = limparTexto(this.value);
     const sugestoes = document.getElementById('listaSugestoes');
@@ -233,9 +250,6 @@ document.getElementById('filtroClientes').addEventListener('input', function() {
     }
 });
 
-/* ========================================== */
-/* HISTÓRICO / RELATÓRIO */
-/* ========================================== */
 async function carregarDadosPlanilha() {
     const id = localStorage.getItem('idLojaAmmeep');
     const corpo = document.getElementById('corpoTabela');
@@ -269,9 +283,6 @@ function prepararImpressao() {
     window.print();
 }
 
-/* ========================================== */
-/* FINANCEIRO E GRÁFICO */
-/* ========================================== */
 async function processarFinanceiro() {
     const id = localStorage.getItem('idLojaAmmeep');
     const inicio = document.getElementById('dataInicioF').value;
@@ -337,26 +348,8 @@ function gerarGraficoFinanceiro(dados, cores) {
 }
 
 /* ========================================== */
-/* PERFIL (EDIÇÃO LIBERADA) */
+/* PERFIL E SALVAMENTO */
 /* ========================================== */
-function verificarTravaPerfil() {
-    const end = localStorage.getItem('endereco');
-    const tel = localStorage.getItem('telefoneLoja');
-    if (end && tel) {
-        const inpEnd = document.getElementById('perf-endereco');
-        const inpTel = document.getElementById('perf-telefone');
-        const inpTab = document.getElementById('perf-bairroOrigem');
-
-        // Garante que os valores apareçam, mas SEM desabilitar os campos
-        if (inpEnd) { inpEnd.value = end; }
-        if (inpTel) { inpTel.value = tel; }
-        
-        // Mantém o botão de salvar sempre visível
-        document.getElementById('btnSalvarPerfil').style.display = 'block';
-        document.getElementById('avisoTravaPerfil').style.display = 'none';
-    }
-}
-
 async function salvarCadastroCompleto() {
     const end = document.getElementById('perf-endereco').value.trim();
     const tel = document.getElementById('perf-telefone').value.trim();
@@ -364,7 +357,6 @@ async function salvarCadastroCompleto() {
 
     if (!tel || !end || tab === "Selecione") return alert("Campos obrigatórios!");
 
-    // Reaproveita o ID se já existir, senão cria um novo
     const idExistente = localStorage.getItem('idLojaAmmeep');
     const novoID = idExistente || `${tab.substring(0,3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
     
@@ -379,7 +371,9 @@ async function salvarCadastroCompleto() {
     localStorage.setItem('origem', tab);
 
     recarregarDadosInterface();
-    alert("✅ Cadastro atualizado com sucesso!");
+    
+    // Dispara o aviso de sucesso e tabela ativa
+    mostrarAviso(`Tabela ${tab} Ativada`);
 }
 
 function vincularIDManual() {
