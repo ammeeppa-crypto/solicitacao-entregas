@@ -13,7 +13,6 @@ const URL_PLANILHA = "https://script.google.com/macros/s/AKfycby0k4teozsiMEMyWf3
 /* FUNÇÃO DE AVISO PERSONALIZADO (TOAST) */
 /* ========================================== */
 function mostrarAviso(mensagem) {
-    // Remove aviso anterior se existir
     const antigo = document.querySelector('.toast-ammeep');
     if (antigo) antigo.remove();
 
@@ -22,10 +21,8 @@ function mostrarAviso(mensagem) {
     toast.innerHTML = `<span>✅</span> ${mensagem}`;
     document.body.appendChild(toast);
 
-    // Pequeno delay para disparar a animação de subida
     setTimeout(() => toast.classList.add('show'), 100);
 
-    // Remove após 3 segundos
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 400);
@@ -46,9 +43,9 @@ window.addEventListener('load', () => {
         });
         
         recarregarDadosInterface();
+        verificarStatusCadastro(); // Trava os campos se já houver ID
         carregarHistoricoParaFiltro();
 
-        // Alerta inicial de tabela ativa
         const tabAtiva = localStorage.getItem('origem');
         if(tabAtiva) {
             setTimeout(() => mostrarAviso(`Tabela ${tabAtiva} Ativada`), 800);
@@ -57,7 +54,104 @@ window.addEventListener('load', () => {
     .catch(err => console.error("Erro ao carregar tabelas.json:", err));
 });
 
-// ... (Funções carregarHistoricoParaFiltro, trocarAba e limparTexto permanecem iguais)
+/* ========================================== */
+/* LÓGICA DE CONTROLE DE PERFIL (TRAVA/EDITAR) */
+/* ========================================== */
+function verificarStatusCadastro() {
+    const idExistente = localStorage.getItem('idLojaAmmeep');
+    const aviso = document.getElementById('avisoTravaPerfil');
+    const btnEditar = document.getElementById('btnEditarPerfil');
+    const btnSalvar = document.getElementById('btnSalvarPerfil');
+    
+    const campos = [
+        document.getElementById('perf-endereco'),
+        document.getElementById('perf-telefone'),
+        document.getElementById('perf-bairroOrigem')
+    ];
+
+    if (idExistente) {
+        // Exibe o status de cadastrado e trava campos
+        aviso.style.display = 'block';
+        aviso.style.background = '#e3f2fd'; 
+        aviso.style.color = '#0d47a1';
+        aviso.style.border = '1px solid #bbdefb';
+        aviso.innerHTML = `<i class="fa-solid fa-circle-check"></i> Estabelecimento Cadastrado (ID: ${idExistente})`;
+        
+        btnEditar.style.display = 'block';
+        btnSalvar.style.display = 'none';
+
+        campos.forEach(campo => { if(campo) campo.disabled = true; });
+    } else {
+        // Se não tem ID, deixa liberado para o primeiro cadastro
+        aviso.style.display = 'none';
+        btnEditar.style.display = 'none';
+        btnSalvar.style.display = 'block';
+        campos.forEach(campo => { if(campo) campo.disabled = false; });
+    }
+}
+
+function liberarEdicao() {
+    if (confirm("Deseja alterar os dados da sua loja?")) {
+        const btnEditar = document.getElementById('btnEditarPerfil');
+        const btnSalvar = document.getElementById('btnSalvarPerfil');
+        const aviso = document.getElementById('avisoTravaPerfil');
+        
+        const campos = [
+            document.getElementById('perf-endereco'),
+            document.getElementById('perf-telefone'),
+            document.getElementById('perf-bairroOrigem')
+        ];
+
+        // Habilita os campos e alterna botões
+        campos.forEach(campo => { if(campo) campo.disabled = false; });
+        btnEditar.style.display = 'none';
+        btnSalvar.style.display = 'block';
+        
+        aviso.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Editando informações...`;
+        aviso.style.background = '#fff3e0'; 
+        aviso.style.color = '#e65100';
+        aviso.style.border = '1px solid #ffe0b2';
+    }
+}
+
+async function salvarCadastroCompleto() {
+    const end = document.getElementById('perf-endereco').value.trim();
+    const tel = document.getElementById('perf-telefone').value.trim();
+    const tab = document.getElementById('perf-bairroOrigem').value;
+
+    if (!tel || !end || tab === "Selecione") return alert("Campos obrigatórios!");
+
+    // CONFIRMAÇÃO DE CONSCIÊNCIA
+    if (!confirm("Tem certeza que deseja salvar/atualizar estes dados?")) return;
+
+    const idExistente = localStorage.getItem('idLojaAmmeep');
+    const novoID = idExistente || `${tab.substring(0,3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    
+    mostrarAviso("Atualizando ...");
+
+    try {
+        await fetch(URL_PLANILHA, {
+            method: 'POST', mode: 'no-cors',
+            body: JSON.stringify({ action: "vincularLojista", ID: novoID, TELEFONE: tel, LOJA_NOME_ENDERECO: end, TABELA: tab })
+        });
+
+        localStorage.setItem('idLojaAmmeep', novoID);
+        localStorage.setItem('endereco', end);
+        localStorage.setItem('telefoneLoja', tel);
+        localStorage.setItem('origem', tab);
+
+        recarregarDadosInterface();
+        verificarStatusCadastro(); // Trava novamente após salvar
+        
+        mostrarAviso(`Tabela ${tab} Ativada com Sucesso!`);
+    } catch (e) {
+        alert("Erro ao salvar. Verifique sua conexão.");
+    }
+}
+
+/* ========================================== */
+/* DEMAIS FUNÇÕES DO SISTEMA (HISTÓRICO, DELIVERY, ETC) */
+/* ========================================== */
 
 async function carregarHistoricoParaFiltro() {
     const id = localStorage.getItem('idLojaAmmeep');
@@ -104,13 +198,8 @@ function recarregarDadosInterface() {
 
     const inputTabPed = document.getElementById('perf-bairroOrigem-pedido'); 
     if (inputTabPed) inputTabPed.value = tabSalv;
-
-    console.log(`♻️ Interface atualizada para tabela: ${tabSalv}`);
 }
 
-/* ========================================== */
-/* LÓGICA DELIVERY */
-/* ========================================== */
 function calcular() {
     const tabelaOrigem = localStorage.getItem('origem');
     if(!tabelaOrigem || !dadosTabelas[tabelaOrigem]) {
@@ -151,7 +240,7 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
     e.preventDefault();
 
     if (!localStorage.getItem('endereco') || !localStorage.getItem('telefoneLoja')) {
-        alert("⚠️ CADASTRO OBRIGATÓRIO!");
+        alert("⚠️ CADASTRO OBRIGATÓRIO NO PERFIL!");
         return;
     }
 
@@ -174,7 +263,7 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
         method: 'POST', mode: 'no-cors', 
         body: JSON.stringify({ 
             action: "solicitarEntrega",
-            ID_LOJA: ID_LOJA_ATUAL, 
+            ID_LOJA: localStorage.getItem('idLojaAmmeep'), 
             NOME_ESTABELECIMENTO: localStorage.getItem('endereco'),
             WHATSAPP_ESTABELECIMENTO: localStorage.getItem('telefoneLoja'),
             CLIENTE: cliente, 
@@ -194,18 +283,15 @@ document.getElementById('pedidoForm').onsubmit = function(e) {
                 `*ENTREGA:* R$ ${valorBase.toFixed(2).replace('.', ',')}${infoVolta}\n` +
                 `*TOTAL A PAGAR: R$ ${valorTotal.toFixed(2).replace('.', ',')}*\n` +
                 `------------------------------\n\n` +
-                `_AMMEEP v3.1.2_`;
+                `_AMMEEP v3.1.4_`;
 
-    const urlWa = `https://wa.me/?text=${encodeURIComponent(msg)}`;
-    window.location.href = urlWa;
+    window.location.href = `https://wa.me/?text=${encodeURIComponent(msg)}`;
 
     this.reset(); 
     document.getElementById('res-base').innerText = "R$ 0,00";
     document.getElementById('res-volta').innerText = "R$ 0,00";
     document.getElementById('res-total').innerText = "---";
 };
-
-// ... (Funções de Relatório e Financeiro permanecem iguais)
 
 function resetarTudoDelivery() {
     if (confirm("Deseja limpar todos os campos deste pedido?")) {
@@ -270,7 +356,7 @@ async function carregarDadosPlanilha() {
 
 function limparRelatorio() {
     if(confirm("Limpar tela?")) {
-        document.getElementById('corpoTabela').innerHTML = '<tr><td colspan="4">Filtre para ver.</td></tr>';
+        document.getElementById('corpoTabela').innerHTML = '<tr><td colspan="4">Filtre para ver os dados.</td></tr>';
         document.getElementById('resumoTotal').innerText = "R$ 0,00";
     }
 }
@@ -347,38 +433,10 @@ function gerarGraficoFinanceiro(dados, cores) {
     });
 }
 
-/* ========================================== */
-/* PERFIL E SALVAMENTO */
-/* ========================================== */
-async function salvarCadastroCompleto() {
-    const end = document.getElementById('perf-endereco').value.trim();
-    const tel = document.getElementById('perf-telefone').value.trim();
-    const tab = document.getElementById('perf-bairroOrigem').value;
-
-    if (!tel || !end || tab === "Selecione") return alert("Campos obrigatórios!");
-
-    const idExistente = localStorage.getItem('idLojaAmmeep');
-    const novoID = idExistente || `${tab.substring(0,3).toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
-    
-    await fetch(URL_PLANILHA, {
-        method: 'POST', mode: 'no-cors',
-        body: JSON.stringify({ action: "vincularLojista", ID: novoID, TELEFONE: tel, LOJA_NOME_ENDERECO: end, TABELA: tab })
-    });
-
-    localStorage.setItem('idLojaAmmeep', novoID);
-    localStorage.setItem('endereco', end);
-    localStorage.setItem('telefoneLoja', tel);
-    localStorage.setItem('origem', tab);
-
-    recarregarDadosInterface();
-    
-    // Dispara o aviso de sucesso e tabela ativa
-    mostrarAviso(`Tabela ${tab} Ativada`);
-}
-
 function vincularIDManual() {
     const id = document.getElementById('inputResgateID').value.trim().toUpperCase();
-    if (!/^[A-Z]{3}-\d{4}$/.test(id)) return alert("ID inválido!");
+    if (!/^[A-Z]{3}-\d{4}$/.test(id)) return alert("ID inválido! Use o formato AAA-0000");
     localStorage.setItem('idLojaAmmeep', id);
-    location.reload(); 
+    mostrarAviso("ID Vinculado! Recarregando...");
+    setTimeout(() => location.reload(), 1000); 
 }
