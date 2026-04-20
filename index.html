@@ -71,10 +71,8 @@
         </div>
     </form>
     
-    <div class="assinatura">AMMEEP - 2026 | ®Asgama V3.1.@</div>
+    <div class="assinatura">AMMEEP - 2026 | ®Asgama V3.1.4</div>
 </div> 
-
-
 
   <div id="aba-historico" class="aba-content">
   <div id="print-header" style="display:none; text-align:center; color:black; margin-bottom:20px; border-bottom:2px solid #000; padding-bottom:10px;">
@@ -116,7 +114,7 @@
       <button onclick="limparRelatorio()" class="btn-cinza" style="flex: 1; background: #8b0000;">🧹 LIMPAR</button>
     </div>
   </div>
-  <div class="assinatura">AMMEEP - 2026 | ®Asgama V3.1.@</div>
+  <div class="assinatura">AMMEEP - 2026 | ®Asgama V3.1.4</div>
 </div>
 
   <div id="aba-perfil" class="aba-content">
@@ -135,9 +133,8 @@
     <div class="card">
       <h3>Dados da Minha Loja</h3>
       
-      <p id="avisoTravaPerfil" style="display:none; font-size: 11px; color: #148a05; background: #84d8ff; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; border: 1px solid #ffcdd2;">
-        Dados travados para segurança.
-      </p>
+      <p id="avisoTravaPerfil" style="display:none; font-size: 12px; font-weight: bold; padding: 10px; border-radius: 8px; text-align: center; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1);">
+        </p>
 
       <label style="font-size: 11px; font-weight: bold; color: #cecece;">NOME DA LOJA E ENDEREÇO:</label>
       <textarea id="perf-endereco" placeholder="Nome da Loja, Rua, Nº e Bairro" required style="margin-top: 5px; height: 80px;"></textarea>
@@ -167,18 +164,22 @@
          <option value="PIRAPORA">PIRAPORA</option>
          <option value="CARIRI">CARIRI</option>
          <option value="SALGADINHO">SALGADINHO</option>
-
-
       </select>
 
-      <button type="button" id="btnSalvarPerfil" onclick="salvarCadastroCompleto()" class="btn-verde" style="margin-top: 15px;">
-        <i class="fa-solid fa-floppy-disk"></i> SALVAR E ATIVAR
-      </button>
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button type="button" id="btnEditarPerfil" onclick="liberarEdicao()" class="btn-cinza" style="display: none; flex: 1; background: #444;">
+            <i class="fa-solid fa-pen-to-square"></i> EDITAR
+          </button>
+
+          <button type="button" id="btnSalvarPerfil" onclick="salvarCadastroCompleto()" class="btn-verde" style="flex: 2;">
+            <i class="fa-solid fa-floppy-disk"></i> SALVAR E ATIVAR
+          </button>
+      </div>
       
       <div id="statusPerfil" style="text-align:center; font-size:12px; margin-top:10px; font-weight:bold;"></div>
     </div>
 
-    <div class="assinatura">AMMEEP - 2026 | ®Asgama V3.1.@</div>
+    <div class="assinatura">AMMEEP - 2026 | ®Asgama V3.1.4</div>
   </div>
 
   <div id="aba-financeiro" class="aba-content">
@@ -191,21 +192,21 @@
       <button class="btn-azul btn-financeiro-slim" onclick="processarFinanceiro()">🔍 ANALISAR DADOS</button><br>
 
      <div class="container-resumo-financeiro">
-    <div class="resumo-item bg-verde">
-        <span>TAXAS</span>
-        <b id="fin-total-taxas">R$ 0,00</b>
+        <div class="resumo-item bg-verde">
+            <span>TAXAS</span>
+            <b id="fin-total-taxas">R$ 0,00</b>
+        </div>
+        <div class="resumo-item bg-preto">
+            <span>ENTREGAS</span>
+            <b id="fin-total-entregas">0</b>
+        </div>
     </div>
-    <div class="resumo-item bg-preto">
-        <span>ENTREGAS</span>
-        <b id="fin-total-entregas">0</b>
-    </div>
-</div>
 
       <div class="card-dark">
         <div id="insightFinanceiro" style="margin-top:10px; font-size:11px; font-weight:bold; color:#0f5dc2; text-align:center;"></div>
         <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between;">
           <div id="container-grafico">
-             <canvas id="graficoBairros"></canvas>
+              <canvas id="graficoBairros"></canvas>
           </div>
           <div style="flex: 1; min-width: 0;">
             <p style="font-size: 9px; margin-bottom: 5px; color: #aaa; text-align:center; font-weight: bold;">RANKING</p>
@@ -216,7 +217,7 @@
         </div>
       </div>
     </div>
-    <div class="assinatura">AMMEEP - 2026 | ®Asgama V.s3.@</div>
+    <div class="assinatura">AMMEEP - 2026 | ®Asgama V3.1.4</div>
   </div>
 
   <nav class="bottom-nav">
@@ -229,7 +230,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
   
-  <script src="script.js?v=3.1.2"></script>
+  <script src="script.js?v=3.1.4"></script>
 
 </body>
 </html>
