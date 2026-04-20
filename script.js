@@ -492,9 +492,10 @@ function gerarGraficoFinanceiro(dados, cores) {
 }
 
 function vincularIDManual() {
-    // Exibe o alerta de que o resgate automático está bloqueado
-    alert("🔒 SEGURANÇA AMMEEP:\n\nO resgate automático de dados foi desativado.\n\nPara recuperar seu acesso ou transferir para um novo dispositivo, entre em contato diretamente com o suporte AMMEEP para validação de identidade.");
-    
-    // Limpa o campo para o usuário
-    document.getElementById('inputResgateID').value = "";
+    const id = document.getElementById('inputResgateID').value.trim().toUpperCase();
+    if (!/^[A-Z]{3}-\d{4}$/.test(id)) return alert("ID inválido! Use o formato AAA-0000");
+    localStorage.setItem('idLojaAmmeep', id);
+    mostrarAviso("ID Vinculado! Recarregando...");
+    setTimeout(() => location.reload(), 1000); 
 }
+
