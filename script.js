@@ -379,28 +379,39 @@ async function processarFinanceiro() {
     try {
         const res = await fetch(`${URL_PLANILHA}?action=read&id=${id}`);
         const dados = await res.json();
-        let totalGeral = 0, totalEntregas = 0, bairrosData = {};
+        let totalGeral = 0, totalEntregas = 0;
+        let bairrosData = {}; // Armazenará { valor: X, qtd: Y }
 
         dados.forEach(p => {
             const dataP = p.data.split('T')[0];
             if (dataP >= inicio && dataP <= fim) {
                 const valor = parseFloat(p.taxa || 0);
-                const bairro = (p.endereco && p.endereco.includes('(')) ? p.endereco.split('(')[1].replace(')', '').trim().toUpperCase() : "DIVERSOS";
-                totalGeral += valor; totalEntregas++;
-                bairrosData[bairro] = (bairrosData[bairro] || 0) + valor;
+                const bairro = (p.endereco && p.endereco.includes('(')) 
+                    ? p.endereco.split('(')[1].replace(')', '').trim().toUpperCase() 
+                    : "DIVERSOS";
+
+                totalGeral += valor;
+                totalEntregas++;
+
+                if (!bairrosData[bairro]) {
+                    bairrosData[bairro] = { valor: 0, qtd: 0 };
+                }
+                bairrosData[bairro].valor += valor;
+                bairrosData[bairro].qtd += 1;
             }
         });
 
         document.getElementById('fin-total-taxas').innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
         document.getElementById('fin-total-entregas').innerText = totalEntregas;
 
-        const rankingOrdenado = Object.entries(bairrosData).sort((a, b) => b[1] - a[1]);
-        const coresPizza = ['#0f5dc2', '#0cbd15', '#ffc107', '#e91e63', '#9c27b0', '#ff5722', '#00bcd4', '#8bc34a', '#607d8b', '#795548', '#ff9800', '#009688', '#3f51b5', '#f44336', '#9e9e9e'];
+        // Ordena pelo valor total (item[1].valor)
+        const rankingOrdenado = Object.entries(bairrosData).sort((a, b) => b[1].valor - a[1].valor);
+        const cores = ['#0f5dc2', '#0cbd15', '#ffc107', '#e91e63', '#9c27b0', '#ff5722', '#00bcd4', '#8bc34a', '#607d8b', '#795548'];
 
         listaRanking.innerHTML = ""; 
         rankingOrdenado.forEach((item, index) => {
             let icone = "";
-            const corAtual = coresPizza[index % coresPizza.length];
+            const corAtual = cores[index % cores.length];
             if (index === 0) icone = "🥇";
             else if (index === 1) icone = "🥈";
             else if (index === 2) icone = "🥉";
@@ -408,28 +419,75 @@ async function processarFinanceiro() {
 
             listaRanking.innerHTML += `
                 <tr style="border-bottom: 1px solid #333;">
-                    <td style="color: #ffffff !important; padding: 7px 0; font-weight: normal; font-size: 11px;">${icone} ${item[0]}</td>
-                    <td style="color: #ffffff !important; text-align: right; padding: 7px 0; font-weight: normal; font-size: 11px;">R$ ${item[1].toFixed(2).replace('.', ',')}</td>
+                    <td style="color: #ffffff !important; padding: 7px 0; font-weight: normal; font-size: 11px;">
+                        ${icone} ${item[0]} <span style="color: #888;">(${item[1].qtd} peds)</span>
+                    </td>
+                    <td style="color: #ffffff !important; text-align: right; padding: 7px 0; font-weight: normal; font-size: 11px;">
+                        R$ ${item[1].valor.toFixed(2).replace('.', ',')}
+                    </td>
                 </tr>`;
         });
-        gerarGraficoFinanceiro(rankingOrdenado, coresPizza);
-        if (rankingOrdenado.length > 0) document.getElementById("insightFinanceiro").innerText = `🏆 Bairro mais forte: ${rankingOrdenado[0][0]}`;
+
+        gerarGraficoFinanceiro(rankingOrdenado.slice(0, 5), cores);
+        
+        if (rankingOrdenado.length > 0) {
+            document.getElementById("insightFinanceiro").innerText = `🏆 Bairro mais forte: ${rankingOrdenado[0][0]}`;
+        }
     } catch (e) { console.error(e); }
 }
 
 function gerarGraficoFinanceiro(dados, cores) {
     const ctx = document.getElementById('graficoBairros').getContext('2d');
     if (chartFinanceiro) chartFinanceiro.destroy();
+
     chartFinanceiro = new Chart(ctx, {
-        type: 'pie',
+        type: 'bar', // Mudança para Colunas
         data: {
-            labels: dados.slice(0, 5).map(i => i[0]),
-            datasets: [{
-                data: dados.slice(0, 5).map(i => i[1]),
-                backgroundColor: cores.slice(0, 5)
-            }]
+            labels: dados.map(i => i[0]),
+            datasets: [
+                {
+                    label: 'Valor (R$)',
+                    data: dados.map(i => i[1].valor),
+                    backgroundColor: cores.slice(0, 5),
+                    borderRadius: 5,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Qtd Pedidos',
+                    data: dados.map(i => i[1].qtd),
+                    type: 'line', // Estilo misto para destacar a quantidade
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffc107',
+                    yAxisID: 'y1'
+                }
+            ]
         },
-        options: { plugins: { legend: { display: false } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    position: 'left',
+                    grid: { color: '#333' },
+                    ticks: { color: '#aaa', font: { size: 10 } }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    grid: { display: false },
+                    ticks: { color: '#ffc107', font: { size: 10 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#aaa', font: { size: 9 } }
+                }
+            }
+        }
     });
 }
 
