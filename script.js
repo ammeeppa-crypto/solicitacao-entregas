@@ -491,11 +491,33 @@ function gerarGraficoFinanceiro(dados, cores) {
     });
 }
 
+/* ========================================== */
+/* FUNÇÃO DE RESGATE COM SENHA MASTER (SUPORTE) */
+/* ========================================== */
 function vincularIDManual() {
-    const id = document.getElementById('inputResgateID').value.trim().toUpperCase();
-    if (!/^[A-Z]{3}-\d{4}$/.test(id)) return alert("ID inválido! Use o formato AAA-0000");
-    localStorage.setItem('idLojaAmmeep', id);
-    mostrarAviso("ID Vinculado! Recarregando...");
-    setTimeout(() => location.reload(), 1000); 
-}
+    const campoID = document.getElementById('inputResgateID');
+    const valorDigitado = campoID.value.trim();
+    
+    // DEFINA SUA SENHA MASTER AQUI (Exemplo: AMMEEP2026)
+    const SENHA_MASTER = "AMMEEP2026"; 
 
+    // 1. Verifica se o que foi digitado é a Senha Master
+    if (valorDigitado === SENHA_MASTER) {
+        const novoID = prompt("🔑 MODO SUPORTE ATIVADO\nDigite o ID da Loja para vincular:");
+        
+        if (novoID && /^[A-Z]{3}-\d{4}$/.test(novoID.toUpperCase())) {
+            localStorage.setItem('idLojaAmmeep', novoID.toUpperCase());
+            alert("✅ Sucesso! ID vinculado pelo suporte. O app será reiniciado.");
+            location.reload();
+        } else {
+            alert("❌ ID inválido. Operação cancelada.");
+        }
+        return; // Encerra aqui para não mostrar o alerta de erro abaixo
+    }
+
+    // 2. Se não for a senha, mostra o aviso padrão para o lojista
+    alert("🔒 SEGURANÇA AMMEEP:\n\nO resgate automático de dados está desativado.\n\nPara recuperar seu acesso, entre em contato com o suporte para validação de identidade.");
+    
+    // Limpa o campo
+    campoID.value = "";
+}
