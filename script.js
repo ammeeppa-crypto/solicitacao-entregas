@@ -490,23 +490,35 @@ function gerarGraficoFinanceiro(dados, cores) {
         }
     });
 }
+/* ========================================== */
+/* FUNÇÃO DE RESGATE COM MENSAGEM DE ORIENTAÇÃO */
+/* ========================================== */
 function vincularIDManual() {
     const campoID = document.getElementById('inputResgateID');
-    // Usamos .toUpperCase() para que a senha funcione mesmo se digitar minúsculo
     const valorDigitado = campoID.value.trim().toUpperCase(); 
     
-    const SENHA_MASTER = "AMMEEP2026"; // Garanta que aqui esteja tudo MAIÚSCULO
+    // SUA SENHA MASTER
+    const SENHA_MASTER = "AMMEEP2026"; 
 
     if (valorDigitado === SENHA_MASTER) {
-        const novoID = prompt("🔑 MODO SUPORTE\nDigite o ID (Ex: SAU-1234):");
-        if (novoID) {
-            localStorage.setItem('idLojaAmmeep', novoID.trim().toUpperCase());
-            alert("✅ Vinculado! Reiniciando...");
+        const novoID = prompt("🔑 MODO SUPORTE\nDigite o ID da Loja para vincular:");
+        
+        if (novoID && /^[A-Z]{3}-\d{4}$/.test(novoID.toUpperCase())) {
+            // Salva o ID no celular
+            localStorage.setItem('idLojaAmmeep', novoID.toUpperCase());
+            
+            // MENSAGEM QUE VOCÊ SOLICITOU
+            alert("✅ Dados recuperados, adicione os dados da sua loja com sua tabela e salve.");
+            
+            // Reinicia para carregar as informações do novo ID
             location.reload();
+        } else {
+            alert("❌ Operação cancelada ou ID inválido.");
         }
         return;
     }
 
-    alert("🔒 SEGURANÇA AMMEEP:\nResgate desativado. Contate o suporte.");
+    // Alerta padrão para quem não tem a senha
+    alert("🔒 SEGURANÇA AMMEEP:\n\nO resgate automático de dados está desativado.\n\nContate os adms para validação");
     campoID.value = "";
 }
