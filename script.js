@@ -490,7 +490,6 @@ function gerarGraficoFinanceiro(dados, cores) {
         }
     });
 }
-
 /* ========================================== */
 /* FUNÇÃO DE RESGATE COM SENHA MASTER (SUPORTE) */
 /* ========================================== */
@@ -499,7 +498,7 @@ function vincularIDManual() {
     const valorDigitado = campoID.value.trim();
     
     // DEFINA SUA SENHA MASTER AQUI (Exemplo: AMMEEP2026)
-    const SENHA_MASTER = "GLAY1440"; 
+    const SENHA_MASTER = "AMMEEP2026"; 
 
     // 1. Verifica se o que foi digitado é a Senha Master
     if (valorDigitado === SENHA_MASTER) {
