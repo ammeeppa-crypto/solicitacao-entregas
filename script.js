@@ -499,7 +499,7 @@ function vincularIDManual() {
     const valorDigitado = campoID.value.trim();
     
     // DEFINA SUA SENHA MASTER AQUI (Exemplo: AMMEEP2026)
-    const SENHA_MASTER = "AMMEEP2026"; 
+    const SENHA_MASTER = "Glay1440"; 
 
     // 1. Verifica se o que foi digitado é a Senha Master
     if (valorDigitado === SENHA_MASTER) {
